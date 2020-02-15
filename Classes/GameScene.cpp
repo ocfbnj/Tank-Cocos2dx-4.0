@@ -13,12 +13,21 @@ bool GameScene::init() {
     if (!Scene::init())
         return false;
 
+    // 初始化表
+    table[EventKeyboard::KeyCode::KEY_A] = Dir::LEFT;
+    table[EventKeyboard::KeyCode::KEY_W] = Dir::UP;
+    table[EventKeyboard::KeyCode::KEY_D] = Dir::RIGHT;
+    table[EventKeyboard::KeyCode::KEY_S] = Dir::DOWN;
+
     // 将背景色设置为灰色
     auto background = LayerColor::create(Color4B(100, 100, 100, 200));
     this->addChild(background);
 
     // 播放开始音乐
-    AudioEngine::play2d("music/start.wav");
+    //AudioEngine::setFinishCallback(AudioEngine::play2d("music/start.mp3"),
+    //    [](auto, auto) {
+    //        // AudioEngine::play2d("music/bk_sound.mp3", true);
+    //    });
 
     // 展示加载动画
     __showLoadAnimate();
@@ -96,22 +105,10 @@ void GameScene::__enableKeyListener() {
         auto player1 = map->getPlayer1();
         switch (keyCode) {
             case cocos2d::EventKeyboard::KeyCode::KEY_A:
-                player1->setDir(Dir::LEFT);
-                player1->playAnimate();
-                player1->startMove();
-                break;
             case cocos2d::EventKeyboard::KeyCode::KEY_W:
-                player1->setDir(Dir::UP);
-                player1->playAnimate();
-                player1->startMove();
-                break;
             case cocos2d::EventKeyboard::KeyCode::KEY_D:
-                player1->setDir(Dir::RIGHT);
-                player1->playAnimate();
-                player1->startMove();
-                break;
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
-                player1->setDir(Dir::DOWN);
+                player1->setDir(table[keyCode]);
                 player1->playAnimate();
                 player1->startMove();
                 break;
@@ -133,6 +130,7 @@ void GameScene::__enableKeyListener() {
             case cocos2d::EventKeyboard::KeyCode::KEY_S:
                 player1->stopAnimate();
                 player1->stopMove();
+                break;
             default:
                 break;
         }

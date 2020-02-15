@@ -4,6 +4,8 @@
 #include "Bullet.h"
 #include "Block.h"
 
+#include "AudioEngine.h"
+
 USING_NS_CC;
 
 bool TankBase::init() {
@@ -113,11 +115,17 @@ bool TankBase::__isTankIntersection() {
 }
 
 void TankBase::startMove() {
-    this->schedule(CC_SCHEDULE_SELECTOR(TankBase::__autoMove), 0.02f);
+    if (!isMove) {
+        musicId = AudioEngine::play2d("music/player_move.mp3");
+        this->schedule(CC_SCHEDULE_SELECTOR(TankBase::__autoMove), 0.02f);
+        isMove = true;
+    }
 }
 
 void TankBase::stopMove() {
     this->unschedule(CC_SCHEDULE_SELECTOR(TankBase::__autoMove));
+    AudioEngine::stop(musicId);
+    isMove = false;
 }
 
 void TankBase::shoot() {
@@ -132,6 +140,7 @@ cocos2d::Vector<Bullet*>& TankBase::getAllBullets() {
 }
 
 void TankBase::__shoot(Bullet* bullet) {
+    AudioEngine::play2d("music/shoot.mp3");
     auto position = this->getPosition();
     switch (dir) {
         case Dir::LEFT:

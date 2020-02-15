@@ -42,4 +42,7 @@ private:
     bool __isMapIntersection();                         // 检测坦克与地图边缘的碰撞
     bool __isBlockIntersection();                       // 检测坦克与方块的碰撞
     bool __isTankIntersection();                        // 检测坦克之间的碰撞
+
+    int musicId = -1;
+    bool isMove = false;
 };

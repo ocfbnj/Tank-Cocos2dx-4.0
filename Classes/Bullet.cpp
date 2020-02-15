@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "MapLayer.h"
 
+#include "AudioEngine.h"
+
 USING_NS_CC;
 
 bool Bullet::init() {
@@ -97,6 +99,8 @@ bool Bullet::__isMapIntersection() {
 		|| position.y + BULLET_SIZE / 2 > CENTER_HEIGHT
 		|| position.x + BULLET_SIZE / 2 > CENTER_WIDTH
 		|| position.y - BULLET_SIZE / 2 < 0) {
+
+		AudioEngine::play2d("music/bin.mp3");
 		return true;
 	}
 	return false;
@@ -136,6 +140,8 @@ bool Bullet::__isBlockIntersection() {
 				
 			} else if (block->getType() == BlockType::STONE) {
 				// Åöµ½Ê¯Í·
+				AudioEngine::play2d("music/bin.mp3");
+
 				count++;
 				++it;
 			} else {
