@@ -27,8 +27,8 @@ bool BlockWall::init() {
 		this->addChild(blacks[i]);
 		blacks[i]->setVisible(false);
 
-		blacks[i]->setPosition(Vec2(i / 2 * BLOCK_SIZE / 2,
-			i % 2 * BLOCK_SIZE / 2));
+		blacks[i]->setPosition(Vec2(i / 2 * BLOCK_SIZE / 2.0f,
+			i % 2 * BLOCK_SIZE / 2.0f));
 	}
 
 	return true;

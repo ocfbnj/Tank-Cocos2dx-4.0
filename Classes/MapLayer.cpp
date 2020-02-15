@@ -3,7 +3,6 @@
 #include "MapLayer.h"
 #include "PlayerTank.h"
 #include "Block.h"
-#include "Bullet.h"
 
 #include <string>
 
@@ -107,7 +106,7 @@ void MapLayer::addEnemies() {
 	// TODO
 }
 
-void MapLayer::loadLevelData(int stage) {
+void MapLayer::loadLevelData(short stage) {
 	// 先添加大本营
 	auto camp = BlockCamp::create();
 	this->addChild(camp);
@@ -148,7 +147,7 @@ void MapLayer::loadLevelData(int stage) {
 
 				// 设置精灵在图层上的位置
 				block->setAnchorPoint(Vec2(0, 0));
-				block->setPosition(Vec2(j * BLOCK_SIZE, (25 - i) * BLOCK_SIZE));
+				block->setPosition(Vec2((float)j * BLOCK_SIZE, (float)(25 - i) * BLOCK_SIZE));
 
 				// 存储vector
 				blocks.pushBack(block);

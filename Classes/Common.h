@@ -38,5 +38,5 @@
 #define BULLET_SIZE     4
 
 enum class Dir {
-	LEFT, UP, RIGHT, DOWN
+	LEFT = 0, UP, RIGHT, DOWN
 };

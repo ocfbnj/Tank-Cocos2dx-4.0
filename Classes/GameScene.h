@@ -17,8 +17,8 @@ private:
 
 	void __showLoadAnimate();                     // 展示载入关卡动画
 	void __initMapLayer();                        // 初始化地图数据
-	void __enablekeyListener();                   // 启动键盘监听器
+	void __enableKeyListener();                   // 启动键盘监听器
 
-	unsigned stage = 1;                           // 当前关卡
+	short stage = 1;                              // 当前关卡
 };
 

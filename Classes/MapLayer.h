@@ -12,7 +12,7 @@ public:
 
 	static MapLayer* getInstance();            // 得到地图图层实例
 
-	void loadLevelData(int stage);             // 加载指定关卡的数据
+	void loadLevelData(short stage);           // 加载指定关卡的数据
 
 	TankBase* getPlayer1();                    // 得到玩家1
 	Block* getCamp();                          // 得到大本营

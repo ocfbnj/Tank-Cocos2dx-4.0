@@ -13,6 +13,8 @@ bool PlayerTank::init() {
 	}
 
 	dir = Dir::UP;
+    level = 3;
+    this->initWithSpriteFrameName("player1_1_" + std::to_string(level));
 
 	return true;
 }
@@ -27,64 +29,75 @@ void PlayerTank::setDir(Dir d) {
 	// 当改变方向时，将坐标调整为最接近于8的倍数
 	__adjustPosition();
 
-	// 更换图片
-	switch (dir) {
-	case Dir::LEFT:
-		this->setSpriteFrame(
-			SpriteFrameCache::getInstance()->getSpriteFrameByName("player1_left"));
-		break;
-	case Dir::UP:
-		this->setSpriteFrame(
-			SpriteFrameCache::getInstance()->getSpriteFrameByName("player1_up"));
-		break;
-	case Dir::RIGHT:
-		this->setSpriteFrame(
-			SpriteFrameCache::getInstance()->getSpriteFrameByName("player1_right"));
-		break;
-	case Dir::DOWN:
-		this->setSpriteFrame(
-			SpriteFrameCache::getInstance()->getSpriteFrameByName("player1_down"));
-		break;
-	default:
-		break;
-	}
+	std::string name = "player1_" + std::to_string((int)dir) +"_"
+	        + std::to_string(level);
+
+    // 更换图片
+    this->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(name));
 }
 
 void PlayerTank::__initSpriteFrameCache() {
 	auto spriteFrameCache = SpriteFrameCache::getInstance();
 	Rect tankRect(0, 0, TANK_SIZE, TANK_SIZE);
 
-	// 1级坦克
-	auto player1Left_1 = SpriteFrame::create("images/player1_tank/m0-0-1.png", tankRect);
-	auto player1Left_2 = SpriteFrame::create("images/player1_tank/m0-0-2.png", tankRect);
-	auto player1Left = Animation::createWithSpriteFrames({ player1Left_1, player1Left_2 }, 0.05f);
-	animations.pushBack(Animate::create(player1Left));
+	// 总共4个等级
+	for (int i = 0; i < 4; i++) {
+	    std::string lev = std::to_string(i);
 
-	auto player1Up_1 = SpriteFrame::create("images/player1_tank/m0-1-1.png", tankRect);
-	auto player1Up_2 = SpriteFrame::create("images/player1_tank/m0-1-2.png", tankRect);
-	auto player1Up = Animation::createWithSpriteFrames({ player1Up_1, player1Up_2 }, 0.05f);
-	animations.pushBack(Animate::create(player1Up));
+	    // 左
+	    auto player1_0_1 = SpriteFrame::create("images/player1_tank/m"+lev+"-0-1.png", tankRect);
+        auto player1_0_2 = SpriteFrame::create("images/player1_tank/m"+lev+"-0-2.png", tankRect);
+        auto player1_0 = Animation::createWithSpriteFrames({ player1_0_1, player1_0_2 }, 0.05f);
 
-	auto player1Right_1 = SpriteFrame::create("images/player1_tank/m0-2-1.png", tankRect);
-	auto player1Right_2 = SpriteFrame::create("images/player1_tank/m0-2-2.png", tankRect);
-	auto player1Right = Animation::createWithSpriteFrames({ player1Right_1, player1Right_2 }, 0.05f);
-	animations.pushBack(Animate::create(player1Right));
+        // 上
+        auto player1_1_1 = SpriteFrame::create("images/player1_tank/m"+lev+"-1-1.png", tankRect);
+        auto player1_1_2 = SpriteFrame::create("images/player1_tank/m"+lev+"-1-2.png", tankRect);
+        auto player1_1 = Animation::createWithSpriteFrames({ player1_1_1, player1_1_2 }, 0.05f);
+        // 右
+        auto player1_2_1 = SpriteFrame::create("images/player1_tank/m"+lev+"-2-1.png", tankRect);
+        auto player1_2_2 = SpriteFrame::create("images/player1_tank/m"+lev+"-2-2.png", tankRect);
+        auto player1_2 = Animation::createWithSpriteFrames({ player1_2_1, player1_2_2 }, 0.05f);
 
-	auto player1Down_1 = SpriteFrame::create("images/player1_tank/m0-3-1.png", tankRect);
-	auto player1Down_2 = SpriteFrame::create("images/player1_tank/m0-3-2.png", tankRect);
-	auto player1Down = Animation::createWithSpriteFrames({ player1Down_1, player1Down_2 }, 0.05f);
-	animations.pushBack(Animate::create(player1Down));
+        // 下
+        auto player1_3_1 = SpriteFrame::create("images/player1_tank/m"+lev+"-3-1.png", tankRect);
+        auto player1_3_2 = SpriteFrame::create("images/player1_tank/m"+lev+"-3-2.png", tankRect);
+        auto player1_3 = Animation::createWithSpriteFrames({ player1_3_1, player1_3_2 }, 0.05f);
 
-	spriteFrameCache->addSpriteFrame(player1Left_1, "player1_left");
-	spriteFrameCache->addSpriteFrame(player1Up_1, "player1_up");
-	spriteFrameCache->addSpriteFrame(player1Right_1, "player1_right");
-	spriteFrameCache->addSpriteFrame(player1Down_1, "player1_down");
+	    // 添加到缓存
+        spriteFrameCache->addSpriteFrame(player1_0_1, "player1_0_" + lev);
+        spriteFrameCache->addSpriteFrame(player1_1_1, "player1_1_" + lev);
+        spriteFrameCache->addSpriteFrame(player1_2_1, "player1_2_" + lev);
+        spriteFrameCache->addSpriteFrame(player1_3_1, "player1_3_" + lev);
 
-	// 2级坦克
+        // 保存
+        animations[0].pushBack(Animate::create(player1_0));
+        animations[1].pushBack(Animate::create(player1_1));
+        animations[2].pushBack(Animate::create(player1_2));
+        animations[3].pushBack(Animate::create(player1_3));
+	}
 
-	// 3级坦克
+}
 
-	// 4级坦克
+void PlayerTank::__initBullets() {
+    TankBase::__initBullets();
+    auto bullet2 = Bullet::create();
+    bullets.pushBack(bullet2);
+}
 
-	this->initWithSpriteFrameName("player1_up");
+void PlayerTank::shoot() {
+    auto bullet1 = bullets.at(0);
+    auto bullet2 = bullets.at(1);
+
+    if (!bullet1->isVisible() && !bullet2->isVisible()) {
+        __shoot(bullet1);
+    } else if (bullet1->isVisible() && bullet2->isVisible()) {
+        // do nothing
+    } else if (level >= 2) {
+        // 此时可发射两枚子弹
+        if (bullet1->isVisible()) {
+            __shoot(bullet2);
+        } else {
+            __shoot(bullet1);
+        }
+    }
 }

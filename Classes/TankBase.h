@@ -4,45 +4,42 @@
 #include "Bullet.h"
 #include "Common.h"
 
-enum class TankLevel {
-	_1_, _2_, _3_, _4_
-};
+// 坦克等级
+// 玩家分为4类
+// 2级及以上可发射两枚子弹
+// 敌人分为4种
+using TankLevel = short;
 
 class TankBase : public cocos2d::Sprite {
 public:
-	bool init() override;
+    bool init() override;
 
-	virtual void playAnimate();
-	virtual void stopAnimate();
+    virtual void playAnimate();                         // 播放移动动画
+    virtual void stopAnimate();                         // 停止播放动画
+    virtual void shoot();                               // 发射子弹
+    virtual void setDir(Dir d) = 0;                     // 坦克改变方向
 
-	virtual void setDir(Dir d) = 0;
+    void startMove();                                   // 开启自动移动
+    void stopMove();                                    // 停止自动移动
 
-	void moveLeft();
-	void moveUp();
-	void moveRight();
-	void moveDown();
-
-	void startMove();
-	void stopMove();
-
-	void shoot();
-
-	cocos2d::Vector<Bullet*>& getAllBullets();
+    cocos2d::Vector<Bullet*>& getAllBullets();          // 获得坦克拥有的所有子弹
 
 protected:
-	virtual void __initSpriteFrameCache() = 0;
+    virtual void __initSpriteFrameCache() = 0;          // 初始化坦克精灵帧缓存
+    virtual void __initBullets();                       // 创建子弹
 
-	void __initBullets();
-	void __autoMove(float t);
-	void __adjustPosition();
+    void __autoMove(float t);                           // 自动移动
+    void __adjustPosition();                            // 调整位置为8的倍数
+    void __shoot(Bullet* bullet);                       // 发射子弹辅助函数
 
-	Dir dir;
-	cocos2d::Vector<cocos2d::Animate*> animations;
-	cocos2d::Vector<Bullet*> bullets;
+    Dir dir;                                            // 坦克当前方向
+    TankLevel level;                                    // 坦克当前等级
+    cocos2d::Vector<cocos2d::Animate*> animations[4];   // 存储坦克动画（方向和等级）
+    cocos2d::Vector<Bullet*> bullets;                   // 存储坦克所有的子弹
 
 private:
-	int __adjustNumber(int number);
-	bool __isMapIntersection();
-	bool __isBlockIntersection();
-	bool __isTankIntersection();
+    static float __adjustNumber(int number);            // 将给定数字调整为8的倍数
+    bool __isMapIntersection();                         // 检测坦克与地图边缘的碰撞
+    bool __isBlockIntersection();                       // 检测坦克与方块的碰撞
+    bool __isTankIntersection();                        // 检测坦克之间的碰撞
 };
