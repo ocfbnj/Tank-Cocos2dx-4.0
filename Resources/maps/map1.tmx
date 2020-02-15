@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.2" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="26" height="26" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="34">
+ <tileset firstgid="1" name="map" tilewidth="8" tileheight="8" tilecount="16" columns="4">
+  <image source="map.png" width="32" height="32"/>
+ </tileset>
+ <layer id="1" name="home" width="26" height="26">
+  <data encoding="base64" compression="zlib">
+   eAFjYBgFoyEwGgKjITAaAqMhMBoCoyEwGgKgEGDCgakdOvS2hxPoAS4kv9HKP7xAg/nIsAcAQAgAVw==
+  </data>
+ </layer>
+ <objectgroup id="2" name="wall" visible="0">
+  <object id="4" x="80" y="176" width="8" height="8"/>
+  <object id="5" x="88" y="176" width="8" height="8"/>
+  <object id="7" x="96" y="176" width="8" height="8"/>
+  <object id="8" x="104" y="176" width="8" height="8"/>
+  <object id="9" x="120" y="176" width="8" height="8"/>
+  <object id="10" x="112" y="176" width="8" height="8"/>
+  <object id="11" x="80" y="184" width="8" height="8"/>
+  <object id="12" x="88" y="184" width="8" height="8"/>
+  <object id="13" x="104" y="184" height="8"/>
+  <object id="16" x="104" y="184" width="8" height="8"/>
+  <object id="17" x="112" y="184" width="8" height="8"/>
+  <object id="18" x="120" y="184" width="8" height="8"/>
+  <object id="19" x="120" y="192" width="8" height="8"/>
+  <object id="20" x="120" y="200" width="8" height="8"/>
+  <object id="21" x="112" y="200" width="8" height="8"/>
+  <object id="22" x="112" y="192" width="8" height="8"/>
+  <object id="23" x="80" y="192" width="8" height="8"/>
+  <object id="24" x="88" y="192" width="8" height="8"/>
+  <object id="25" x="80" y="200" width="8" height="8"/>
+  <object id="26" x="88" y="200" width="8" height="8"/>
+  <object id="30" x="96" y="184" width="8" height="8"/>
+ </objectgroup>
+ <objectgroup id="3" name="home" visible="0">
+  <object id="33" x="96" y="192" width="16" height="16"/>
+ </objectgroup>
+</map>
