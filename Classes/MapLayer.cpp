@@ -115,7 +115,7 @@ void MapLayer::loadLevelData(short stage) {
 
 	// 然后添加其他方块
 	std::string filename = "maps/" + std::to_string(stage) + ".txt";
-	auto str = FileUtils::getInstance()->getStringFromFile("maps/4.txt");
+	auto str = FileUtils::getInstance()->getStringFromFile("maps/35.txt");
 
 	int index = 0;
 
@@ -139,6 +139,8 @@ void MapLayer::loadLevelData(short stage) {
 				block = BlockForest::create();
 			} else if (c == '4') {
 				block = BlockRiver::create();
+			} else if (c == '2') {
+				block = BlockIce::create();
 			}
 
 			if (block) {

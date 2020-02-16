@@ -89,8 +89,9 @@ void GameScene::__showLoadAnimate() {
 
 void GameScene::__initMapLayer() {
     map = MapLayer::getInstance();
-    map->addPlayer();
+    
     map->loadLevelData(stage);
+    map->addPlayer();
 
     this->addChild(map);
     map->setContentSize(Size(CENTER_WIDTH, CENTER_HEIGHT));
