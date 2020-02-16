@@ -28,6 +28,10 @@ void Bullet::setDir(Dir d) {
 	dir = d;
 }
 
+void Bullet::setLevel(BulletLevel lev) {
+	level = lev;
+}
+
 void Bullet::__showEffect() {
 	auto spriteFrameCache = SpriteFrameCache::getInstance();
 	auto mapLayer = MapLayer::getInstance();
@@ -59,20 +63,24 @@ void Bullet::__autoMove(float t) {
 	// 4. 移动时检测和子弹的碰撞
 
 	auto position = this->getPosition();
+	auto step = 1;
+	if (level >= 1) {
+		step = 2;
+	}
 
 	// 假设可以移动
 	switch (dir) {
 	case Dir::LEFT:
-		this->setPositionX(position.x - 1);
+		this->setPositionX(position.x - step);
 		break;
 	case Dir::UP:
-		this->setPositionY(position.y + 1);
+		this->setPositionY(position.y + step);
 		break;
 	case Dir::RIGHT:
-		this->setPositionX(position.x + 1);
+		this->setPositionX(position.x + step);
 		break;
 	case Dir::DOWN:
-		this->setPositionY(position.y - 1);
+		this->setPositionY(position.y - step);
 		break;
 	default:
 		break;
@@ -124,7 +132,6 @@ bool Bullet::__isBlockIntersection() {
 
 				if (result.first) {
 					// 发生碰撞
-					// MapLayer::getInstance()->removeChild(block);
 					count++;
 					if (result.second) {
 						// 发生碰撞且被摧毁
@@ -140,10 +147,16 @@ bool Bullet::__isBlockIntersection() {
 				
 			} else if (block->getType() == BlockType::STONE) {
 				// 碰到石头
-				AudioEngine::play2d("music/bin.mp3");
+				if (level >= 2) {
+					count++;
+					block->removeFromParent();
+					it = blocks.erase(it);
+				} else {
+					AudioEngine::play2d("music/bin.mp3");
 
-				count++;
-				++it;
+					count++;
+					++it;
+				}
 			} else {
 				// 碰到大本营
 				++it;

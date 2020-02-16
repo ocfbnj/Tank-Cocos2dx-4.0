@@ -87,6 +87,24 @@ void MapLayer::__addSpriteFrameCache() {
 	spriteFrameCache->addSpriteFrame(blast_2, "blast_2");
 	spriteFrameCache->addSpriteFrame(blast_3, "blast_3");
 	spriteFrameCache->addSpriteFrame(blast_4, "blast_4");
+
+	// 出生前的星星
+	auto star_0 = Sprite::create("images/star0.png")->getSpriteFrame();
+	auto star_1 = Sprite::create("images/star1.png")->getSpriteFrame();
+	auto star_2 = Sprite::create("images/star2.png")->getSpriteFrame();
+	auto star_3 = Sprite::create("images/star3.png")->getSpriteFrame();
+
+	spriteFrameCache->addSpriteFrame(star_0, "star_0");
+	spriteFrameCache->addSpriteFrame(star_1, "star_1");
+	spriteFrameCache->addSpriteFrame(star_2, "star_2");
+	spriteFrameCache->addSpriteFrame(star_3, "star_3");
+
+	// 保护环
+	auto ring_0 = Sprite::create("images/ring0.png")->getSpriteFrame();
+	auto ring_1 = Sprite::create("images/ring1.png")->getSpriteFrame();
+
+	spriteFrameCache->addSpriteFrame(ring_0, "ring_0");
+	spriteFrameCache->addSpriteFrame(ring_1, "ring_1");
 }
 
 void MapLayer::addPlayer() {
@@ -115,7 +133,7 @@ void MapLayer::loadLevelData(short stage) {
 
 	// 然后添加其他方块
 	std::string filename = "maps/" + std::to_string(stage) + ".txt";
-	auto str = FileUtils::getInstance()->getStringFromFile("maps/35.txt");
+	auto str = FileUtils::getInstance()->getStringFromFile("maps/10.txt");
 
 	int index = 0;
 
@@ -145,7 +163,11 @@ void MapLayer::loadLevelData(short stage) {
 
 			if (block) {
 				// 将精灵添加到图层
-				this->addChild(block);
+				if (block->getType() == BlockType::FOREST) {
+					this->addChild(block, 101);
+				} else {
+					this->addChild(block);
+				}
 
 				// 设置精灵在图层上的位置
 				block->setAnchorPoint(Vec2(0, 0));

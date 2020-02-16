@@ -21,6 +21,8 @@ public:
 
     void startMove();                                   // 开启自动移动
     void stopMove();                                    // 停止自动移动
+    void startAnimate(std::string);                                // 开始动画
+    void beInvincible(int time);                                // 使坦克无敌
 
     cocos2d::Vector<Bullet*>& getAllBullets();          // 获得坦克拥有的所有子弹
 
@@ -43,6 +45,8 @@ private:
     bool __isBlockIntersection();                       // 检测坦克与方块的碰撞
     bool __isTankIntersection();                        // 检测坦克之间的碰撞
 
-    int musicId = -1;
-    bool isMove = false;
+    int musicId{ -1 };
+    bool isMove{ false };
+    bool canMove{ false };
+    bool isInvincible{ false };
 };

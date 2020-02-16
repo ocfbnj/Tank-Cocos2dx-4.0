@@ -89,7 +89,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	// Ä£ÄâÆÁÄ»´óÐ¡
 	glview->setFrameSize(designResolutionSize.width * 2.5f, designResolutionSize.height * 2.5f);
-
+	
 	register_all_packages();
 
 	// create a scene. it's an autorelease object

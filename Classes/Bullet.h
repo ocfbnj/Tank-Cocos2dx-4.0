@@ -3,6 +3,8 @@
 #include "cocos2d.h"
 #include "Common.h"
 
+using BulletLevel = short;
+
 class Bullet : public cocos2d::Sprite {
 public:
 	bool init() override;
@@ -10,6 +12,7 @@ public:
 	void startMove();
 
 	void setDir(Dir d);
+	void setLevel(BulletLevel lev);
 
 	CREATE_FUNC(Bullet);
 
@@ -21,5 +24,6 @@ private:
 	bool __isTankIntersection();
 	void __showEffect();                // 展示碰撞特效
 
-	Dir dir;
+	Dir dir{};
+	BulletLevel level{};
 };

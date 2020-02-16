@@ -81,6 +81,7 @@ private:
 class BlockForest : public __NonObstacle {
 public:
 	bool init() override;
+	BlockType getType() override { return BlockType::FOREST; }
 
 	CREATE_FUNC(BlockForest);
 };
