@@ -1,5 +1,6 @@
 win32_build
 out
 cmake-build-debug
+build
 .idea
 .vs

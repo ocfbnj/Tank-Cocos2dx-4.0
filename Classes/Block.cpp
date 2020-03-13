@@ -18,8 +18,7 @@ bool BlockWall::init() {
 
 	this->initWithSpriteFrameName("wall");
 
-	// 得到左下角坐标（因为锚点在左下角）
-
+	// 创建4个遮挡精灵
 	for (int i = 0; i < 4; i++) {
 		blacks[i] = LayerColor::create(Color4B(0, 0, 0, 255), 4, 4);
 		blacks[i]->setIgnoreAnchorPointForPosition(false);
@@ -134,7 +133,8 @@ bool BlockRiver::init() {
 		spriteFrameCache->getSpriteFrameByName("river_0"),
 		spriteFrameCache->getSpriteFrameByName("river_1")
 		},
-		1.5f);
+		1.5f
+	);
 
 	auto animate = Animate::create(animation);
 

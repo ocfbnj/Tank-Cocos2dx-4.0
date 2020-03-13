@@ -3,6 +3,7 @@
 #include "MapLayer.h"
 #include "Bullet.h"
 #include "Block.h"
+#include "AStar.h"
 
 #include "AudioEngine.h"
 
@@ -48,7 +49,7 @@ void TankBase::__autoMove(float /*t*/) {
 	// 3. 移动时检测和坦克的碰撞
 
 	auto position = this->getPosition();
-	auto step = 1.0f + level * 0.2;
+	auto step = 1.0f + level * 0.2f;
 
 	// 假设可以移动
 	switch (dir) {
@@ -126,7 +127,7 @@ bool TankBase::__isTankIntersection() {
 
 void TankBase::startMove() {
 	if (!isMove) {
-		musicId = AudioEngine::play2d("music/player_move.mp3");
+		// musicId = AudioEngine::play2d("music/player_move.mp3");
 		this->schedule(CC_SCHEDULE_SELECTOR(TankBase::__autoMove), 0.02f);
 		isMove = true;
 	}
@@ -185,7 +186,27 @@ void TankBase::beInvincible(int time) {
 	));
 }
 
+void TankBase::moveTo(float x, float y) {
+	x = int(x) / BLOCK_SIZE;
+	y = 25 - int(y) / BLOCK_SIZE;
+
+	auto tankX = (int)getPositionX() / BLOCK_SIZE;
+	auto tankY = 25 - (int)getPositionY() / BLOCK_SIZE;
+
+	const char* data = MapLayer::getInstance()->getMapData().c_str();
+	AStar as(tankX, tankY, x, y);
+	as.set_map(data, 26, 26);
+	auto route = as.get_route();
+
+	for (auto& pos : route) {
+		auto ret = pos;
+	}
+}
+
 void TankBase::shoot() {
+	if (!canMove) {
+		return;
+	}
 	auto bullet = bullets.at(0);
 	if (!bullet->isVisible()) {
 		__shoot(bullet);
@@ -196,8 +217,12 @@ cocos2d::Vector<Bullet*>& TankBase::getAllBullets() {
 	return bullets;
 }
 
+Bullet* TankBase::getBullet1() {
+	return bullets.at(0);
+}
+
 void TankBase::__shoot(Bullet* bullet) {
-	AudioEngine::play2d("music/shoot.mp3");
+	// AudioEngine::play2d("music/shoot.mp3");
 	auto position = this->getPosition();
 	switch (dir) {
 	case Dir::LEFT:

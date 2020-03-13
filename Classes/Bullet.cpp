@@ -152,7 +152,7 @@ bool Bullet::__isBlockIntersection() {
 					block->removeFromParent();
 					it = blocks.erase(it);
 				} else {
-					AudioEngine::play2d("music/bin.mp3");
+					// AudioEngine::play2d("music/bin.mp3");
 
 					count++;
 					++it;

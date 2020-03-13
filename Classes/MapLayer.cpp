@@ -19,6 +19,7 @@ bool MapLayer::init() {
 	this->initWithColor(Color4B(0, 0, 0, 255));
 
 	__addSpriteFrameCache();
+	// __addNavigation();
 
 	return true;
 }
@@ -107,6 +108,18 @@ void MapLayer::__addSpriteFrameCache() {
 	spriteFrameCache->addSpriteFrame(ring_1, "ring_1");
 }
 
+void MapLayer::__addNavigation() {
+	auto listener = EventListenerMouse::create();
+	listener->onMouseDown = [=](EventMouse* event) {
+		auto x = (int)event->getCursorX() - CENTER_X;
+		auto y = (int)event->getCursorY() - CENTER_Y;
+
+		getPlayer1()->moveTo(x, y);
+	};
+	
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
 void MapLayer::addPlayer() {
 	auto player = PlayerTank::create();
 	this->addChild(player);
@@ -133,13 +146,13 @@ void MapLayer::loadLevelData(short stage) {
 
 	// 然后添加其他方块
 	std::string filename = "maps/" + std::to_string(stage) + ".txt";
-	auto str = FileUtils::getInstance()->getStringFromFile("maps/10.txt");
+	data = FileUtils::getInstance()->getStringFromFile(filename);
 
 	int index = 0;
 
 	for (int i = 0; i < 26; i++) {
 		for (int j = 0; j < 26; j++) {
-			char c = str[index++];
+			char c = data[index++];
 			if (c == '\r') {
 				j--;
 				index++;
@@ -191,4 +204,8 @@ Block* MapLayer::getCamp() {
 
 cocos2d::Vector<Block*>& MapLayer::getAllBlocks() {
 	return blocks;
+}
+
+const std::string& MapLayer::getMapData() {
+	return data;
 }

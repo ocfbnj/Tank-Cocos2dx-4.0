@@ -24,10 +24,10 @@ bool GameScene::init() {
     this->addChild(background);
 
     // 播放开始音乐
-    AudioEngine::setFinishCallback(AudioEngine::play2d("music/start.mp3"),
+   /* AudioEngine::setFinishCallback(AudioEngine::play2d("music/start.mp3"),
         [](auto, auto) {
             AudioEngine::play2d("music/bk_sound.mp3", true);
-        });
+        });*/
 
     // 展示加载动画
     __showLoadAnimate();

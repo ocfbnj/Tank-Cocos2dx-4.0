@@ -17,7 +17,6 @@ bool PlayerTank::init() {
 	level = 1;
 
 	startAnimate("player1_1_" + std::to_string(level));
-	//this->initWithSpriteFrameName("player1_1_" + std::to_string(level));
 
 	return true;
 }
@@ -70,6 +69,10 @@ void PlayerTank::__initBullets() {
 }
 
 void PlayerTank::shoot() {
+	if (!canMove) {
+		return;
+	}
+
 	auto bullet1 = bullets.at(0);
 	auto bullet2 = bullets.at(1);
 

@@ -49,6 +49,7 @@ public:
 class BlockCamp : public __Obstacle {
 public:
 	bool init() override;
+	BlockType getType() override { return BlockType::CAMP; }
 
 	CREATE_FUNC(BlockCamp);
 };
@@ -63,7 +64,7 @@ public:
 	CREATE_FUNC(BlockWall);
 
 private:
-	cocos2d::LayerColor* blacks[4];          // 4个黑色方块，用于遮挡
+	cocos2d::LayerColor* blacks[4]{};          // 4个黑色方块，用于遮挡
 	bool __isDestory();                      // 检测方块是否被摧毁
 };
 
@@ -89,6 +90,7 @@ public:
 class BlockIce : public __NonObstacle {
 public:
 	bool init() override;
+	BlockType getType() override { return BlockType::ICE; }
 
 	CREATE_FUNC(BlockIce);
 };
@@ -96,6 +98,7 @@ public:
 class BlockRiver : public __River {
 public:
 	bool init() override;
+	BlockType getType() override { return BlockType::RIVER; }
 
 	CREATE_FUNC(BlockRiver);
 };
