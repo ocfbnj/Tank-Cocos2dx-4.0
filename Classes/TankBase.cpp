@@ -3,7 +3,6 @@
 #include "MapLayer.h"
 #include "Bullet.h"
 #include "Block.h"
-#include "AStar.h"
 
 #include "AudioEngine.h"
 
@@ -127,7 +126,7 @@ bool TankBase::__isTankIntersection() {
 
 void TankBase::startMove() {
 	if (!isMove) {
-		// musicId = AudioEngine::play2d("music/player_move.mp3");
+		musicId = AudioEngine::play2d("music/player_move.mp3");
 		this->schedule(CC_SCHEDULE_SELECTOR(TankBase::__autoMove), 0.02f);
 		isMove = true;
 	}
@@ -193,14 +192,14 @@ void TankBase::moveTo(float x, float y) {
 	auto tankX = (int)getPositionX() / BLOCK_SIZE;
 	auto tankY = 25 - (int)getPositionY() / BLOCK_SIZE;
 
-	const char* data = MapLayer::getInstance()->getMapData().c_str();
+	/*const char* data = MapLayer::getInstance()->getMapData().c_str();
 	AStar as(tankX, tankY, x, y);
 	as.set_map(data, 26, 26);
 	auto route = as.get_route();
 
 	for (auto& pos : route) {
 		auto ret = pos;
-	}
+	}*/
 }
 
 void TankBase::shoot() {

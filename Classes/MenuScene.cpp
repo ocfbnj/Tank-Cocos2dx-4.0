@@ -27,7 +27,7 @@ void MenuScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 	case EventKeyboard::KeyCode::KEY_ENTER:
 	{	//进入游戏场景
 		//播放开始音乐
-		//int id = AudioEngine::play2d("sound/gamePause.wav");
+		int id = AudioEngine::play2d("sound/gamePause.wav");
 		
 		//切换场景
 		Director::getInstance()->replaceScene(GameScene::createScene());

@@ -1,7 +1,10 @@
 #pragma once
 
+// 边框大小
+#define BORDER_WIDTH 100
+
 //窗口大小
-#define WINDOW_WIDTH	256
+#define WINDOW_WIDTH	(256 + BORDER_WIDTH)
 #define WINDOW_HEIGHT	224
 
 //箭头位置
@@ -14,8 +17,8 @@
 #define CENTER_HEIGHT	208
 
 //游戏区域相对左下角的坐标
-#define CENTER_X		16
-#define CENTER_Y		9
+#define CENTER_X		((WINDOW_WIDTH - CENTER_WIDTH) / 2)
+#define CENTER_Y		(WINDOW_HEIGHT - CENTER_HEIGHT)
 
 //方块大小
 #define BLOCK_SIZE      8
