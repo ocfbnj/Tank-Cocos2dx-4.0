@@ -2,10 +2,11 @@
 #include "MapLayer.h"
 #include "Common.h"
 #include "AudioEngine.h"
+#include "PlayerTank.h"
 
 USING_NS_CC;
 
-cocos2d::Scene* GameScene::createScene() {
+Scene* GameScene::createScene() {
     return GameScene::create();
 }
 
@@ -24,12 +25,12 @@ bool GameScene::init() {
     this->addChild(background);
 
     // 播放开始音乐
-    AudioEngine::setFinishCallback(AudioEngine::play2d("music/start.mp3"),
-        [](auto, auto) {
+    /*AudioEngine::setFinishCallback(AudioEngine::play2d("music/start.mp3"),
+        [](int, const std::string &) {
             AudioEngine::play2d("music/bk_sound.mp3", true);
-        });
+        });*/
 
-    // 展示加载动画
+        // 展示加载动画
     __showLoadAnimate();
 
     return true;
@@ -54,7 +55,6 @@ void GameScene::__showLoadAnimate() {
 
     auto delayTime = 0.5f;
 
-
     auto action1 = MoveBy::create(delayTime, Vec2(0, -mid));
     auto action2 = MoveBy::create(delayTime, Vec2(0, mid));
 
@@ -75,25 +75,30 @@ void GameScene::__showLoadAnimate() {
     this->addChild(label);
 
     label->runAction(Sequence::create(
-            DelayTime::create(delayTime),
-            Show::create(),
-            DelayTime::create(1),
-            CallFunc::create([=]() {
-                this->removeChild(label);
-                this->__initMapLayer();
-                this->__enableKeyListener();
-            }),
-            nullptr)
+        DelayTime::create(delayTime),
+        Show::create(),
+        DelayTime::create(1),
+        CallFunc::create([=]() {
+        this->removeChild(label);
+        this->__initMapLayer();
+        this->__enableKeyListener();
+        this->__addTouchButton();
+    }),
+        nullptr)
     );
 }
 
 void GameScene::__initMapLayer() {
     map = MapLayer::getInstance();
-    
+
     map->loadLevelData(stage);
+
     map->addPlayer();
+    // map->addEnemies();
 
     this->addChild(map);
+
+    // 设置地图位置
     map->setContentSize(Size(CENTER_WIDTH, CENTER_HEIGHT));
     map->setIgnoreAnchorPointForPosition(false);
     map->setAnchorPoint(Vec2(0, 0));
@@ -103,39 +108,102 @@ void GameScene::__initMapLayer() {
 void GameScene::__enableKeyListener() {
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event*) {
-        auto player1 = map->getPlayer1();
+        auto player1 = static_cast<PlayerTank*>(map->getPlayer1());
         switch (keyCode) {
-            case cocos2d::EventKeyboard::KeyCode::KEY_A:
-            case cocos2d::EventKeyboard::KeyCode::KEY_W:
-            case cocos2d::EventKeyboard::KeyCode::KEY_D:
-            case cocos2d::EventKeyboard::KeyCode::KEY_S:
-                player1->setDir(table[keyCode]);
-                player1->playAnimate();
-                player1->startMove();
-                break;
-            case cocos2d::EventKeyboard::KeyCode::KEY_J:
-                player1->shoot();
-                break;
-            default:
-                break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_A:
+        case cocos2d::EventKeyboard::KeyCode::KEY_W:
+        case cocos2d::EventKeyboard::KeyCode::KEY_D:
+        case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            player1->setDir(table[keyCode]);
+            player1->playAnimate();
+            player1->startMove();
+            break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_J:
+            player1->shoot();
+            break;
+        default:
+            break;
         }
 
     };
 
     listener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event*) {
-        auto player1 = map->getPlayer1();
+        auto player1 = static_cast<PlayerTank*>(map->getPlayer1());
         switch (keyCode) {
-            case cocos2d::EventKeyboard::KeyCode::KEY_A:
-            case cocos2d::EventKeyboard::KeyCode::KEY_W:
-            case cocos2d::EventKeyboard::KeyCode::KEY_D:
-            case cocos2d::EventKeyboard::KeyCode::KEY_S:
-                player1->stopAnimate();
-                player1->stopMove();
-                break;
-            default:
-                break;
+        case cocos2d::EventKeyboard::KeyCode::KEY_A:
+        case cocos2d::EventKeyboard::KeyCode::KEY_W:
+        case cocos2d::EventKeyboard::KeyCode::KEY_D:
+        case cocos2d::EventKeyboard::KeyCode::KEY_S:
+            player1->stopAnimate();
+            player1->stopMove();
+            break;
+        default:
+            break;
         }
     };
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void GameScene::__addTouchButton() {
+    auto btn_left = Sprite::create("images/move_left.png");
+    auto btn_up = Sprite::create("images/move_up.png");
+    auto btn_right = Sprite::create("images/move_right.png");
+    auto btn_down = Sprite::create("images/move_down.png");
+
+    this->addChild(btn_left);
+    this->addChild(btn_up);
+    this->addChild(btn_right);
+    this->addChild(btn_down);
+
+    btn_left->setPosition(15, WINDOW_HEIGHT - 180);
+    btn_up->setPosition(37.5f, WINDOW_HEIGHT - 160);
+    btn_right->setPosition(60, WINDOW_HEIGHT - 180);
+    btn_down->setPosition(37.5f, WINDOW_HEIGHT - 200);
+
+    auto touchListener = EventListenerTouchOneByOne::create();
+
+    touchListener->onTouchBegan = [=](Touch* touch, Event*) {
+        auto point = touch->getLocation();
+        auto player1 = static_cast<PlayerTank*>(map->getPlayer1());
+        bool isMove = false;
+
+        if (btn_left->getBoundingBox().containsPoint(point)) {
+            player1->setDir(Dir::LEFT);
+            isMove = true;
+        } else if (btn_up->getBoundingBox().containsPoint(point)) {
+            player1->setDir(Dir::UP);
+            isMove = true;
+        } else if (btn_right->getBoundingBox().containsPoint(point)) {
+            player1->setDir(Dir::RIGHT);
+            isMove = true;
+        } else if (btn_down->getBoundingBox().containsPoint(point)) {
+            player1->setDir(Dir::DOWN);
+            isMove = true;
+        } else {
+            player1->shoot();
+        }
+
+        if (isMove) {
+            player1->playAnimate();
+            player1->startMove();
+        }
+
+        return true;
+    };
+
+    touchListener->onTouchEnded = [=](Touch* touch, Event*) {
+        auto point = touch->getLocation();
+        auto player1 = static_cast<PlayerTank*>(map->getPlayer1());
+        if (btn_left->getBoundingBox().containsPoint(point)
+            || btn_up->getBoundingBox().containsPoint(point)
+            || btn_right->getBoundingBox().containsPoint(point)
+            || btn_down->getBoundingBox().containsPoint(point)) {
+
+            player1->stopAnimate();
+            player1->stopMove();
+        }
+    };
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 }

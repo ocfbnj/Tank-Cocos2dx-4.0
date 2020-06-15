@@ -108,17 +108,17 @@ void MapLayer::__addSpriteFrameCache() {
 	spriteFrameCache->addSpriteFrame(ring_1, "ring_1");
 }
 
-void MapLayer::__addNavigation() {
-	auto listener = EventListenerMouse::create();
-	listener->onMouseDown = [=](EventMouse* event) {
-		auto x = (int)event->getCursorX() - CENTER_X;
-		auto y = (int)event->getCursorY() - CENTER_Y;
-
-		getPlayer1()->moveTo(x, y);
-	};
-	
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-}
+//void MapLayer::__addNavigation() {
+//	auto listener = EventListenerMouse::create();
+//	listener->onMouseDown = [=](EventMouse* event) {
+//		auto x = (int)event->getCursorX() - CENTER_X;
+//		auto y = (int)event->getCursorY() - CENTER_Y;
+//
+//		getPlayer1()->moveTo(x, y);
+//	};
+//	
+//	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+//}
 
 void MapLayer::addPlayer() {
 	auto player = PlayerTank::create();

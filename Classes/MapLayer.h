@@ -28,7 +28,7 @@ private:
 	CREATE_FUNC(MapLayer);                     // 单例对象
 
 	void __addSpriteFrameCache();              // 加载精灵缓存
-	void __addNavigation();                    // 增加触摸导航功能，测试用
+	// void __addNavigation();                    // 增加触摸导航功能，测试用
 	cocos2d::Vector<Block*> blocks;            // 管理所有方块
 	cocos2d::Vector<TankBase*> players;        // 管理玩家坦克
 	cocos2d::Vector<TankBase*> enemies;        // 管理敌方坦克

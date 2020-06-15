@@ -14,7 +14,7 @@ bool PlayerTank::init() {
 	}
 
 	dir = Dir::UP;
-	level = 1;
+	level = 3;
 
 	startAnimate("player1_1_" + std::to_string(level));
 
@@ -91,4 +91,12 @@ void PlayerTank::shoot() {
 			__shoot(bullet1);
 		}
 	}
+}
+
+void PlayerTank::setBeControl(bool b) {
+	beControl = b;
+}
+
+bool PlayerTank::isBeControl() {
+	return beControl;
 }

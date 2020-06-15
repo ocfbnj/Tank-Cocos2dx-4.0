@@ -11,9 +11,14 @@ public:
 	void setDir(Dir d) override;
     void shoot() override;
 
+	void setBeControl(bool b = true);
+	bool isBeControl();
+
 	CREATE_FUNC(PlayerTank);
 
 private:
+	bool beControl = false;
+
 	void __initSpriteFrameCache() override;
     void __initBullets() override;
 };
