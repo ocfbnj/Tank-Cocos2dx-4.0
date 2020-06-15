@@ -14,7 +14,7 @@ bool PlayerTank::init() {
 	}
 
 	dir = Dir::UP;
-	level = 3;
+	level = 1;
 
 	startAnimate("player1_1_" + std::to_string(level));
 

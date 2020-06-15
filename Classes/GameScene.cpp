@@ -91,7 +91,8 @@ void GameScene::__showLoadAnimate() {
 void GameScene::__initMapLayer() {
     map = MapLayer::getInstance();
 
-    map->loadLevelData(stage);
+    // map->loadLevelData(stage);
+    map->loadLevelData(10);
 
     map->addPlayer();
     // map->addEnemies();
