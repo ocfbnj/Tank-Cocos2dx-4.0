@@ -3,6 +3,7 @@ out
 cmake-build-debug
 build
 proj.android/app/.cxx
+proj.android/app/release
 .idea
 .vs
 .vscode

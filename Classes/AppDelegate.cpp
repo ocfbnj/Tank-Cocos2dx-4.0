@@ -85,12 +85,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0f / 120);
 
     // Set the design resolution
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::SHOW_ALL);
+    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::FIXED_HEIGHT);
 
     // 模拟屏幕大小
     glview->setFrameSize(1280, 768);
 
     register_all_packages();
+
+    // 设置CENTER_X
+    auto width = Director::getInstance()->getVisibleSize().width;
+    CENTER_X = (width - CENTER_WIDTH) / 2;
 
     // create a scene. it's an autorelease object
     auto scene = GameScene::createScene();

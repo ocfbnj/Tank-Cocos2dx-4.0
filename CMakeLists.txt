@@ -27,7 +27,7 @@ cmake_minimum_required(VERSION 3.6)
 
 set(APP_NAME Tank)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED true)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(${APP_NAME})
 

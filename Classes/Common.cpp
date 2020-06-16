@@ -5,3 +5,5 @@ public:
 	int x;
 	int y;
 };
+
+float CENTER_X;
