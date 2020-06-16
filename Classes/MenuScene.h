@@ -10,9 +10,10 @@ public:
     CREATE_FUNC(MenuScene);
 
 private:
-    cocos2d::Sprite* background;                                      // ±³¾°Í¼Æ¬
-    cocos2d::Sprite* selector;                                        // ²Ëµ¥Ñ¡ÔñÆ÷
-    bool isSelectorInit;
+    cocos2d::Node* offsetNode = nullptr;                              // Æ«ÒÆ
+    cocos2d::Sprite* background = nullptr;                            // ±³¾°Í¼Æ¬
+    cocos2d::Sprite* selector = nullptr;                              // ²Ëµ¥Ñ¡ÔñÆ÷
+    bool isSelectorInit = false;
 
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode,        // ¼üÅÌÒÆ¶¯¹â±ê
                       cocos2d::Event* event);

@@ -23,7 +23,7 @@ void TankBase::playAnimate() {
         return;
     }
 
-    this->runAction(RepeatForever::create(animations[(int)dir].at(level)));
+    this->runAction(RepeatForever::create(__getAnimations()[int(dir)].at(level)));
 }
 
 void TankBase::stopAnimate() {

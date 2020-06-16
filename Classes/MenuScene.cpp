@@ -14,7 +14,6 @@ bool MenuScene::init() {
     if (!Scene::init())
         return false;
 
-    isSelectorInit = false;
     __initBackground();
 
     return true;
@@ -69,15 +68,16 @@ bool MenuScene::onTouch(cocos2d::Touch* touch, cocos2d::Event*) {
 }
 
 void MenuScene::__initBackground() {
+    offsetNode = Node::create();
+    this->addChild(offsetNode);
+    offsetNode->setPosition(Director::getInstance()->getVisibleSize() / 2);
+
     // 创建背景图片
     background = Sprite::create("images/select_player.png");
     if (!background) return;
 
-    auto windowSize = Director::getInstance()->getVisibleSize();
-
-    background->setAnchorPoint(Vec2(0, 0));
-    background->setPosition(Vec2(0, windowSize.height));
-    this->addChild(background);
+    offsetNode->addChild(background);
+    background->setPosition(Vec2(0, Director::getInstance()->getVisibleSize().height));
 
     // 按下空格键快进
     auto* keyboardListener = EventListenerKeyboard::create();
@@ -86,7 +86,6 @@ void MenuScene::__initBackground() {
         switch (keyCode) {
         case EventKeyboard::KeyCode::KEY_SPACE:
             background->stopAllActions();
-            background->setAnchorPoint(Vec2(0.f, 0.f));
             background->setPosition(Vec2(0.f, 0.f));
 
             if (!isSelectorInit)
@@ -102,7 +101,6 @@ void MenuScene::__initBackground() {
     auto touchListener = EventListenerTouchOneByOne::create();
     touchListener->onTouchBegan = [&](Touch* touch, Event*) {
         background->stopAllActions();
-        background->setAnchorPoint(Vec2(0.f, 0.f));
         background->setPosition(Vec2(0.f, 0.f));
 
         if (!isSelectorInit)
@@ -133,7 +131,7 @@ void MenuScene::__initSelector() {
     auto animate = __getAnimFrames();
     selector->runAction(RepeatForever::create(animate));
 
-    this->addChild(selector);
+    background->addChild(selector);
 
     // 使用键盘移动光标
     auto* keyBoardlistener = EventListenerKeyboard::create();

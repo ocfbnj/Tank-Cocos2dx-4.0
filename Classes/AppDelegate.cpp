@@ -92,12 +92,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // ÉèÖÃCENTER_X
-    auto width = Director::getInstance()->getVisibleSize().width;
-    CENTER_X = (width - CENTER_WIDTH) / 2;
-
     // create a scene. it's an autorelease object
-    auto scene = GameScene::createScene();
+    auto scene = MenuScene::createScene();
 
     // run
     director->runWithScene(scene);

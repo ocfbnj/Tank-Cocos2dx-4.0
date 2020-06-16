@@ -8,13 +8,12 @@
 
 USING_NS_CC;
 
+cocos2d::Vector<cocos2d::Animate*> PlayerTank::animations[4]{};
+
 bool PlayerTank::init() {
     if (!TankBase::init()) {
         return false;
     }
-
-    // 加载帧动画
-    __loadFrameAnimation();
 
     // 玩家出生时方向向下
     dir = Dir::UP;
@@ -53,7 +52,7 @@ void PlayerTank::__initBullets() {
     bullets.pushBack(bullet2);
 }
 
-void PlayerTank::__loadFrameAnimation() {
+void PlayerTank::loadFrameAnimation() {
     auto spriteFrameCache = SpriteFrameCache::getInstance();
 
     Rect tankRect(0, 0, TANK_SIZE, TANK_SIZE);
@@ -75,6 +74,10 @@ void PlayerTank::__loadFrameAnimation() {
             animations[j].pushBack(Animate::create(player1));
         }
     }
+}
+
+const cocos2d::Vector<cocos2d::Animate*>* PlayerTank::__getAnimations() {
+    return animations;
 }
 
 void PlayerTank::shoot() {

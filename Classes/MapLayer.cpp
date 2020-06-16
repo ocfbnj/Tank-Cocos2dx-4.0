@@ -41,6 +41,7 @@ void MapLayer::__addSpriteFrameCache() {
 
     // Ì¹¿Ë
     TankBase::addSpriteFrameCache();
+    PlayerTank::loadFrameAnimation();
 }
 
 void MapLayer::addPlayer() {

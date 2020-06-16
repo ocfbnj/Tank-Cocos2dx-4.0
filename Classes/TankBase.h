@@ -31,6 +31,8 @@ public:
 
 protected:
     virtual void __initBullets();                       // 创建子弹
+    virtual const cocos2d::Vector<cocos2d::Animate*>*
+        __getAnimations() = 0;                          // 获取帧动画
 
     void __autoMove(float t);                           // 自动移动
     void __adjustPosition();                            // 调整位置为8的倍数
@@ -39,7 +41,6 @@ protected:
     Dir dir = Dir::DOWN;                                // 坦克当前方向
     TankLevel level = 0;                                // 坦克当前等级
     bool canMove = false;                               // 判断能否移动（刚出生时一段时间内无法移动）
-    cocos2d::Vector<cocos2d::Animate*> animations[4];   // 存储坦克移动帧动画（方向和等级）
     cocos2d::Vector<Bullet*> bullets;                   // 存储坦克所有的子弹
 
 private:
@@ -47,7 +48,6 @@ private:
     bool __isMapIntersection();                         // 检测坦克与地图边缘的碰撞
     bool __isBlockIntersection();                       // 检测坦克与方块的碰撞
     bool __isTankIntersection();                        // 检测坦克之间的碰撞
-    virtual void __loadFrameAnimation() = 0;            // 加载坦克移动帧动画
 
     int musicId = -1;                                   // 移动时播放的音乐id
     bool isMove = false;                                // 判断是否正在移动

@@ -102,8 +102,7 @@ void GameScene::__initMapLayer() {
     // ÉèÖÃµØÍ¼Î»ÖÃ
     map->setContentSize(Size(CENTER_WIDTH, CENTER_HEIGHT));
     map->setIgnoreAnchorPointForPosition(false);
-    map->setAnchorPoint(Vec2(0, 0));
-    map->setPosition(Vec2(CENTER_X, CENTER_Y));
+    map->setPosition(Director::getInstance()->getVisibleSize() / 2);
 }
 
 void GameScene::__enableKeyListener() {
