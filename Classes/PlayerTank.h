@@ -6,19 +6,19 @@
 
 class PlayerTank : public TankBase {
 public:
-	bool init() override;
+    bool init() override;
 
-	void setDir(Dir d) override;
+    void setDir(Dir d) override;
     void shoot() override;
 
-	void setBeControl(bool b = true);
-	bool isBeControl();
+    void setBeControl(bool b = true);
+    bool isBeControl();
 
-	CREATE_FUNC(PlayerTank);
+    CREATE_FUNC(PlayerTank);
 
 private:
-	bool beControl = false;
+    bool beControl = false;
 
-	void __initSpriteFrameCache() override;
     void __initBullets() override;
+    void __loadFrameAnimation() override;
 };

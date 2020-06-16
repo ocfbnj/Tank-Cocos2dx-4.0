@@ -13,7 +13,6 @@ bool TankBase::init() {
         return false;
     }
 
-    __initSpriteFrameCache();
     __initBullets();
 
     return true;
@@ -139,7 +138,7 @@ void TankBase::stopMove() {
     isMove = false;
 }
 
-void TankBase::startAnimate(std::string afterStart) {
+void TankBase::birthAnimation(std::string afterStart) {
     auto spriteFrameCache = SpriteFrameCache::getInstance();
     Vector<SpriteFrame*> spriteFrames;
     for (int i = 0; i < 4 * 2; i++) {
@@ -186,27 +185,46 @@ void TankBase::beInvincible(int time) {
         ));
 }
 
-//void TankBase::moveTo(float x, float y) {
-//	x = int(x) / BLOCK_SIZE;
-//	y = 25 - int(y) / BLOCK_SIZE;
-//
-//	auto tankX = (int)getPositionX() / BLOCK_SIZE;
-//	auto tankY = 25 - (int)getPositionY() / BLOCK_SIZE;
-//
-//	const char* data = MapLayer::getInstance()->getMapData().c_str();
-//	AStar as(tankX, tankY, x, y);
-//	as.set_map(data, 26, 26);
-//	auto route = as.get_route();
-//
-//	for (auto& pos : route) {
-//		auto ret = pos;
-//	}
-//}
+void TankBase::addSpriteFrameCache() {
+    auto spriteFrameCache = SpriteFrameCache::getInstance();
+
+    // 坦克爆炸帧动画
+    auto* blast_0 = Sprite::create("images/blast/0.png")->getSpriteFrame();
+    auto* blast_1 = Sprite::create("images/blast/1.png")->getSpriteFrame();
+    auto* blast_2 = Sprite::create("images/blast/2.png")->getSpriteFrame();
+    auto* blast_3 = Sprite::create("images/blast/3.png")->getSpriteFrame();
+    auto* blast_4 = Sprite::create("images/blast/4.png")->getSpriteFrame();
+
+    spriteFrameCache->addSpriteFrame(blast_0, "blast_0");
+    spriteFrameCache->addSpriteFrame(blast_1, "blast_1");
+    spriteFrameCache->addSpriteFrame(blast_2, "blast_2");
+    spriteFrameCache->addSpriteFrame(blast_3, "blast_3");
+    spriteFrameCache->addSpriteFrame(blast_4, "blast_4");
+
+    // 坦克出生前的星星帧动画
+    auto star_0 = Sprite::create("images/star0.png")->getSpriteFrame();
+    auto star_1 = Sprite::create("images/star1.png")->getSpriteFrame();
+    auto star_2 = Sprite::create("images/star2.png")->getSpriteFrame();
+    auto star_3 = Sprite::create("images/star3.png")->getSpriteFrame();
+
+    spriteFrameCache->addSpriteFrame(star_0, "star_0");
+    spriteFrameCache->addSpriteFrame(star_1, "star_1");
+    spriteFrameCache->addSpriteFrame(star_2, "star_2");
+    spriteFrameCache->addSpriteFrame(star_3, "star_3");
+
+    // 坦克保护环帧动画
+    auto ring_0 = Sprite::create("images/ring0.png")->getSpriteFrame();
+    auto ring_1 = Sprite::create("images/ring1.png")->getSpriteFrame();
+
+    spriteFrameCache->addSpriteFrame(ring_0, "ring_0");
+    spriteFrameCache->addSpriteFrame(ring_1, "ring_1");
+}
 
 void TankBase::shoot() {
     if (!canMove) {
         return;
     }
+
     auto bullet = bullets.at(0);
     if (!bullet->isVisible()) {
         __shoot(bullet);

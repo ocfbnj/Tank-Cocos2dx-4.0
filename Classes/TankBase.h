@@ -21,16 +21,15 @@ public:
 
     void startMove();                                   // 开启自动移动
     void stopMove();                                    // 停止自动移动
-    void startAnimate(std::string);                     // 开始动画
+    void birthAnimation(std::string);                   // 坦克出生动画
     void beInvincible(int);                             // 使坦克无敌
 
-    // void moveTo(float x, float y);                      // 自动寻路
+    static void addSpriteFrameCache();
 
     cocos2d::Vector<Bullet*>& getAllBullets();          // 获得坦克拥有的所有子弹
     Bullet* getBullet1();                               // 得到第一颗子弹
 
 protected:
-    virtual void __initSpriteFrameCache() = 0;          // 初始化坦克精灵帧缓存
     virtual void __initBullets();                       // 创建子弹
 
     void __autoMove(float t);                           // 自动移动
@@ -39,8 +38,8 @@ protected:
 
     Dir dir = Dir::DOWN;                                // 坦克当前方向
     TankLevel level = 0;                                // 坦克当前等级
-    bool canMove = false;                               // 判断能否移动
-    cocos2d::Vector<cocos2d::Animate*> animations[4];   // 存储坦克动画（方向和等级）
+    bool canMove = false;                               // 判断能否移动（刚出生时一段时间内无法移动）
+    cocos2d::Vector<cocos2d::Animate*> animations[4];   // 存储坦克移动帧动画（方向和等级）
     cocos2d::Vector<Bullet*> bullets;                   // 存储坦克所有的子弹
 
 private:
@@ -48,6 +47,7 @@ private:
     bool __isMapIntersection();                         // 检测坦克与地图边缘的碰撞
     bool __isBlockIntersection();                       // 检测坦克与方块的碰撞
     bool __isTankIntersection();                        // 检测坦克之间的碰撞
+    virtual void __loadFrameAnimation() = 0;            // 加载坦克移动帧动画
 
     int musicId = -1;                                   // 移动时播放的音乐id
     bool isMove = false;                                // 判断是否正在移动
