@@ -198,7 +198,10 @@ bool Bullet::__isBlockIntersection() {
                 }
             } else {
                 // 碰到大本营
-                // TODO
+                AudioEngine::play2d("music/camp_bomb.mp3");
+                MapLayer::getInstance()->getCamp()->setTexture(
+                    SpriteFrameCache::getInstance()->getSpriteFrameByName("camp_1")->getTexture());
+                MapLayer::getInstance()->isCampOk = false;
                 ++it;
             }
 

@@ -138,6 +138,7 @@ void MapLayer::resetMap() {
     this->cleanup();
     this->removeAllChildrenWithCleanup(true);
     this->remainTank = ENEMIES_COUNT;
+    this->isCampOk = true;
 }
 
 void MapLayer::loadLevelData(short stage) {

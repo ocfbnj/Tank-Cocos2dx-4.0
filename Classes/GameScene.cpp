@@ -4,6 +4,7 @@
 #include "AudioEngine.h"
 #include "PlayerTank.h"
 #include "MenuScene.h"
+#include "GameOverScene.h"
 
 USING_NS_CC;
 
@@ -221,14 +222,11 @@ void GameScene::__addTouchButton() {
 }
 
 void GameScene::__checkGameStatus(float) {
-    if (map->getPlayers().size() == 0) {
-        // 失败
-        // 进入主界面
-        this->cleanup();
-        this->removeAllChildrenWithCleanup(true);
+    if (map->getPlayers().size() == 0 || !map->isCampOk) {
+        // 进入失败场景
+        this->unschedule(CC_SCHEDULE_SELECTOR(GameScene::__checkGameStatus));
+        scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::__gameover), 2.0f);
 
-        auto scene = MenuScene::create();
-        Director::getInstance()->replaceScene(scene);
     } else if (map->remainTank == 0 && map->getEnemies().size() == 0) {
         // 胜利
         // 进入下一场景
@@ -239,4 +237,26 @@ void GameScene::__checkGameStatus(float) {
         scene->stage = ((this->stage + 1) % STAGE_COUNT) + 1;
         Director::getInstance()->replaceScene(scene);
     }
+}
+
+void GameScene::__gameover(float) {
+    auto gameover = Sprite::create("images/gameover.png");
+    gameover->getTexture()->setAliasTexParameters();
+    this->addChild(gameover);
+    gameover->setPosition({this->getContentSize().width / 2, -gameover->getContentSize().height / 2});
+    auto moveTo = MoveTo::create(2.0f, {this->getContentSize().width / 2, this->getContentSize().height / 2 });
+    
+    gameover->runAction(Sequence::create(
+        moveTo,
+        DelayTime::create(1.0f),
+        CallFunc::create([this] {
+        this->cleanup();
+        this->removeAllChildrenWithCleanup(true);
+
+        Director::getInstance()->replaceScene(GameOverScene::createScene());
+    }),
+        nullptr
+    ));
+    
+    
 }

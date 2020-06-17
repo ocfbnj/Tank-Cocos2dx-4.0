@@ -149,31 +149,35 @@ void PlayerTank::disBlood() {
     // 播放音效
     AudioEngine::play2d("music/enemy-bomb.mp3");
 
+    // 播放动画
+    auto node = Sprite::create();
+    MapLayer::getInstance()->addChild(node);
+    node->setPosition(this->getPosition());
+    node->runAction(Sequence::create(blastanimate,
+                                     CallFunc::create([node] {node->removeFromParentAndCleanup(true); }),
+                                     nullptr));
+
     if (--blood == 0) {
         // 移除该坦克
         auto& players = MapLayer::getInstance()->getPlayers();
         players.eraseObject(this);
+        this->removeFromParentAndCleanup(true);
 
-        // 播放动画
-        this->runAction(
-            Sequence::create(
-                blastanimate,
-                CallFunc::create([this] {
-            this->removeFromParentAndCleanup(true);
-        }),
-                nullptr
-            ));
+        // 显示一个从左到右的动画
+        auto gameover = Sprite::create("images/gameover.png");
+        gameover->getTexture()->setAliasTexParameters();
+        MapLayer::getInstance()->addChild(gameover);
+        gameover->setPosition(-gameover->getContentSize().width / 2, PLAYER1_START_Y);
+        
+        auto moveTo = MoveTo::create(1.0f, { PLAYER1_START_X - 8, PLAYER1_START_Y });
+        gameover->runAction(Sequence::create(moveTo, 
+                                             DelayTime::create(1.0f),
+                                             CallFunc::create([gameover](){gameover->removeFromParent();}), 
+                                             nullptr));
     } else {
         // 播放动画
         this->isInvincible = true; // 防止掉血
-        this->runAction(
-            Sequence::create(
-                blastanimate,
-                CallFunc::create([this] {
-            // 回到出生点
-            birth("player1_" + std::to_string((int)dir) + "_" + std::to_string(level));
-        }),
-                nullptr
-            ));
+        // 回到出生点
+        birth("player1_" + std::to_string((int)dir) + "_" + std::to_string(level));
     }
 }

@@ -26,5 +26,6 @@ private:
     void __enableKeyListener();                               // 启动键盘监听器
     void __addTouchButton();                                  // 添加触摸按钮
     void __checkGameStatus(float);                            // 检查游戏状态
+    void __gameover(float);                                   // 游戏结束动画
 };
 

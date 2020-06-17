@@ -30,9 +30,10 @@ public:
     void addPlayer();                               // 添加玩家
     void addEnemies();                              // 添加敌人
 
-    void resetMap();                                   // 清理工作
+    void resetMap();                                // 清理工作
 
     unsigned char remainTank = ENEMIES_COUNT;       // 剩余未出生的敌方坦克
+    bool isCampOk = true;                           // 大本营是否完好
 
 private:
     CREATE_FUNC(MapLayer);                          // 单例对象
