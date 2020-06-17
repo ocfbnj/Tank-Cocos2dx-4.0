@@ -41,6 +41,11 @@ void Bullet::addSpriteFrameCache() {
     auto* bullet_r = Sprite::create("images/bullet/bullet-2.png")->getSpriteFrame();
     auto* bullet_d = Sprite::create("images/bullet/bullet-3.png")->getSpriteFrame();
 
+    bullet_l->getTexture()->setAliasTexParameters();
+    bullet_u->getTexture()->setAliasTexParameters();
+    bullet_r->getTexture()->setAliasTexParameters();
+    bullet_d->getTexture()->setAliasTexParameters();
+
     spriteFrameCache->addSpriteFrame(bullet_l, "bullet_l");
     spriteFrameCache->addSpriteFrame(bullet_u, "bullet_u");
     spriteFrameCache->addSpriteFrame(bullet_r, "bullet_r");
@@ -50,6 +55,10 @@ void Bullet::addSpriteFrameCache() {
     auto* bumb_0 = Sprite::create("images/bullet/bumb0.png")->getSpriteFrame();
     auto* bumb_1 = Sprite::create("images/bullet/bumb1.png")->getSpriteFrame();
     auto* bumb_2 = Sprite::create("images/bullet/bumb2.png")->getSpriteFrame();
+
+    bumb_0->getTexture()->setAliasTexParameters();
+    bumb_1->getTexture()->setAliasTexParameters();
+    bumb_2->getTexture()->setAliasTexParameters();
 
     spriteFrameCache->addSpriteFrame(bumb_0, "bumb_0");
     spriteFrameCache->addSpriteFrame(bumb_1, "bumb_1");

@@ -1,10 +1,7 @@
 #include "Common.h"
 
 #include "PlayerTank.h"
-#include "TankBase.h"
 #include "MapLayer.h"
-
-#include "cocos2d.h"
 
 USING_NS_CC;
 
@@ -15,7 +12,7 @@ bool PlayerTank::init() {
         return false;
     }
 
-    // 玩家出生时方向向下
+    // 玩家出生时方向向上
     dir = Dir::UP;
 
     // TODO: 删掉这行
@@ -66,6 +63,9 @@ void PlayerTank::loadFrameAnimation() {
             auto player1_1 = SpriteFrame::create("images/player1_tank/m" + lev + "-" + d + "-1.png", tankRect);
             auto player1_2 = SpriteFrame::create("images/player1_tank/m" + lev + "-" + d + "-2.png", tankRect);
             auto player1 = Animation::createWithSpriteFrames({ player1_1, player1_2 }, 0.05f);
+
+            player1_1->getTexture()->setAliasTexParameters();
+            player1_2->getTexture()->setAliasTexParameters();
 
             // 添加到缓存
             spriteFrameCache->addSpriteFrame(player1_1, "player1_" + d + "_" + lev);

@@ -95,7 +95,7 @@ void GameScene::__initMapLayer() {
     map->loadLevelData(10);
 
     map->addPlayer();
-    // map->addEnemies();
+    map->addEnemies();
 
     this->addChild(map);
 

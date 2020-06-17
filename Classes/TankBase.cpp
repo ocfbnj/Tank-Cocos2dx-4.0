@@ -146,8 +146,11 @@ void TankBase::birthAnimation(std::string afterStart) {
         auto spriteFrame = spriteFrameCache->getSpriteFrameByName("star_" + n);
         spriteFrames.pushBack(spriteFrame);
     }
+
+    // 星星动画
     auto animation = Animation::createWithSpriteFrames(spriteFrames, 0.2f);
     auto animate = Animate::create(animation);
+
     this->runAction(Sequence::create(
         animate,
         CallFunc::create([=]() {
@@ -177,7 +180,6 @@ void TankBase::beInvincible(int time) {
     ring->runAction(Sequence::create(
         animate,
         CallFunc::create([=]() {
-
         ring->removeFromParent();
         this->isInvincible = false;
     })
@@ -195,6 +197,12 @@ void TankBase::addSpriteFrameCache() {
     auto* blast_3 = Sprite::create("images/blast/3.png")->getSpriteFrame();
     auto* blast_4 = Sprite::create("images/blast/4.png")->getSpriteFrame();
 
+    blast_0->getTexture()->setAliasTexParameters();
+    blast_1->getTexture()->setAliasTexParameters();
+    blast_2->getTexture()->setAliasTexParameters();
+    blast_3->getTexture()->setAliasTexParameters();
+    blast_4->getTexture()->setAliasTexParameters();
+
     spriteFrameCache->addSpriteFrame(blast_0, "blast_0");
     spriteFrameCache->addSpriteFrame(blast_1, "blast_1");
     spriteFrameCache->addSpriteFrame(blast_2, "blast_2");
@@ -207,6 +215,11 @@ void TankBase::addSpriteFrameCache() {
     auto star_2 = Sprite::create("images/star2.png")->getSpriteFrame();
     auto star_3 = Sprite::create("images/star3.png")->getSpriteFrame();
 
+    star_0->getTexture()->setAliasTexParameters();
+    star_1->getTexture()->setAliasTexParameters();
+    star_2->getTexture()->setAliasTexParameters();
+    star_3->getTexture()->setAliasTexParameters();
+
     spriteFrameCache->addSpriteFrame(star_0, "star_0");
     spriteFrameCache->addSpriteFrame(star_1, "star_1");
     spriteFrameCache->addSpriteFrame(star_2, "star_2");
@@ -215,6 +228,9 @@ void TankBase::addSpriteFrameCache() {
     // 坦克保护环帧动画
     auto ring_0 = Sprite::create("images/ring0.png")->getSpriteFrame();
     auto ring_1 = Sprite::create("images/ring1.png")->getSpriteFrame();
+
+    ring_0->getTexture()->setAliasTexParameters();
+    ring_1->getTexture()->setAliasTexParameters();
 
     spriteFrameCache->addSpriteFrame(ring_0, "ring_0");
     spriteFrameCache->addSpriteFrame(ring_1, "ring_1");

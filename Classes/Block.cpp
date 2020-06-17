@@ -18,6 +18,9 @@ void Block::addSpriteFrameCache() {
     auto* camp_0 = Sprite::create("images/block/camp0.png")->getSpriteFrame();
     auto* camp_1 = Sprite::create("images/block/camp1.png")->getSpriteFrame();
 
+    camp_0->getTexture()->setAliasTexParameters();
+    camp_1->getTexture()->setAliasTexParameters();
+
     spriteFrameCache->addSpriteFrame(camp_0, "camp_0");
     spriteFrameCache->addSpriteFrame(camp_1, "camp_1");
 
@@ -28,6 +31,13 @@ void Block::addSpriteFrameCache() {
     auto* ice = Sprite::create("images/block/ice.png")->getSpriteFrame();
     auto* river_0 = Sprite::create("images/block/river-0.png")->getSpriteFrame();
     auto* river_1 = Sprite::create("images/block/river-1.png")->getSpriteFrame();
+
+    wall->getTexture()->setAliasTexParameters();
+    stone->getTexture()->setAliasTexParameters();
+    forest->getTexture()->setAliasTexParameters();
+    ice->getTexture()->setAliasTexParameters();
+    river_0->getTexture()->setAliasTexParameters();
+    river_1->getTexture()->setAliasTexParameters();
 
     spriteFrameCache->addSpriteFrame(wall, "wall");
     spriteFrameCache->addSpriteFrame(stone, "stone");

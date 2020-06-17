@@ -2,6 +2,7 @@
 
 #include "MapLayer.h"
 #include "PlayerTank.h"
+#include "EnemyTank.h"
 #include "Block.h"
 
 #include <string>
@@ -42,6 +43,7 @@ void MapLayer::__addSpriteFrameCache() {
     // Ì¹¿Ë
     TankBase::addSpriteFrameCache();
     PlayerTank::loadFrameAnimation();
+    EnemyTank::loadFrameAnimation();
 }
 
 void MapLayer::addPlayer() {
@@ -59,6 +61,16 @@ void MapLayer::addPlayer() {
 
 void MapLayer::addEnemies() {
     // TODO
+    auto enemy = EnemyTank::create();
+    this->addChild(enemy);
+    enemy->setPosition(PLAYER2_START_X, PLAYER2_START_Y);
+
+    auto bullets = enemy->getAllBullets();
+    for (auto bullet : bullets) {
+        this->addChild(bullet);
+    }
+
+    enemies.pushBack(enemy);
 }
 
 void MapLayer::loadLevelData(short stage) {

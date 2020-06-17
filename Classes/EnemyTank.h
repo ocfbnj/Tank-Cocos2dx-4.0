@@ -2,27 +2,20 @@
 
 #include "TankBase.h"
 
-
-class PlayerTank : public TankBase {
+class EnemyTank : public TankBase {
 public:
+    CREATE_FUNC(EnemyTank);
+
     bool init() override;
 
     void setDir(Dir d) override;
-    void shoot() override;
-
-    void setBeControl(bool b = true);
-    bool isBeControl();
 
     static void loadFrameAnimation();                          // 加载坦克移动帧动画
 
-    CREATE_FUNC(PlayerTank);
-
 protected:
-    const cocos2d::Vector<cocos2d::Animate*>* __getAnimations() override;
+    const cocos2d::Vector<cocos2d::Animate*>*
+        __getAnimations() override;
 
 private:
-    bool beControl = false;
     static cocos2d::Vector<cocos2d::Animate*> animations[4];   // 存储坦克移动帧动画（方向和等级）
-
-    void __initBullets() override;
 };
