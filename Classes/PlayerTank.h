@@ -12,6 +12,7 @@ public:
 
     void setBeControl(bool b = true);
     bool isBeControl();
+    void disBlood() override;
 
     static void loadFrameAnimation();                          // 加载坦克移动帧动画
 

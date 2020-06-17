@@ -76,6 +76,7 @@ void MenuScene::__initBackground() {
     background = Sprite::create("images/select_player.png");
     if (!background) return;
 
+    background->getTexture()->setAliasTexParameters();
     offsetNode->addChild(background);
     background->setPosition(Vec2(0, Director::getInstance()->getVisibleSize().height));
 
@@ -125,6 +126,7 @@ void MenuScene::__initBackground() {
 
 void MenuScene::__initSelector() {
     selector = Sprite::create("images/m0-2-1.png");
+    selector->getTexture()->setAliasTexParameters();
     selector->setPosition(ARROWS_X, WINDOW_HEIGHT - ARROWS_Y);
 
     // Ñ­»·²¥·Å¶¯»­
@@ -153,12 +155,16 @@ Animate* MenuScene::__getAnimFrames() {
     Vector<SpriteFrame*> animFrams;
     animFrams.reserve(2);
 
-    animFrams.pushBack(
-        SpriteFrame::create("images/m0-2-1.png", Rect(0, 0, TANK_SIZE, TANK_SIZE)));
+    auto a1 = SpriteFrame::create("images/m0-2-1.png", Rect(0, 0, TANK_SIZE, TANK_SIZE));
+    auto a2 = SpriteFrame::create("images/m0-2-2.png", Rect(0, 0, TANK_SIZE, TANK_SIZE));
+    
+    a1->getTexture()->setAliasTexParameters();
+    a2->getTexture()->setAliasTexParameters();
 
-    animFrams.pushBack(
-        SpriteFrame::create("images/m0-2-2.png", Rect(0, 0, TANK_SIZE, TANK_SIZE)));
+    animFrams.pushBack(a1);
+    animFrams.pushBack(a2);
 
     auto animation = Animation::createWithSpriteFrames(animFrams, 0.01f);
+
     return Animate::create(animation);
 }

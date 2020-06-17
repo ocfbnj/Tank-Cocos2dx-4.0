@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "Common.h"
 #include "MapLayer.h"
+#include "PlayerBullet.h"
 
 #include "AudioEngine.h"
 
@@ -126,9 +127,12 @@ void Bullet::__autoMove(float t) {
     // <2.3> 如果是墙壁，则什么都不做
     // <3> 展示子弹碰撞特效
     // <4> 停止自动移动
-    if (__isBlockIntersection() || __isMapIntersection() || __isTankIntersection()) {
+    if (__isBlockIntersection() || __isMapIntersection()) {
         this->setVisible(false);
         this->__showEffect();
+        this->__stopMove();
+    } else if (__isTankIntersection() || __isBulletIntersection()) {
+        this->setVisible(false);
         this->__stopMove();
     }
 
@@ -185,7 +189,8 @@ bool Bullet::__isBlockIntersection() {
                     block->removeFromParent();
                     it = blocks.erase(it);
                 } else {
-                    AudioEngine::play2d("music/bin.mp3");
+                    if (dynamic_cast<PlayerBullet*>(this))
+                        AudioEngine::play2d("music/bin.mp3");
 
                     count++;
                     ++it;
@@ -203,9 +208,4 @@ bool Bullet::__isBlockIntersection() {
     }
 
     return count;
-}
-
-bool Bullet::__isTankIntersection() {
-    // TODO
-    return false;
 }

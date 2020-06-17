@@ -3,6 +3,7 @@
 #include "cocos2d.h"
 #include "Block.h"
 #include "PlayerTank.h"
+#include "EnemyTank.h"
 
 #include <string>
 
@@ -12,26 +13,37 @@ class MapLayer : public cocos2d::LayerColor {
 public:
     bool init() override;
 
-    static MapLayer* getInstance();            // 得到地图图层实例
+    static MapLayer* getInstance();                 // 得到地图图层实例
 
-    void loadLevelData(short stage);           // 加载指定关卡的数据
+    void loadLevelData(short stage);                // 加载指定关卡的数据
 
-    Block* getCamp();                          // 得到大本营
-    PlayerTank* getPlayer1();                  // 得到玩家1
-    const std::string& getMapData();           // 得到地图数据
-    cocos2d::Vector<Block*>& getAllBlocks();   // 得到所有方块
+    Block* getCamp();                               // 得到大本营
+    PlayerTank* getPlayer1();                       // 得到玩家1
+    const std::string& getMapData();                // 得到地图数据
+    cocos2d::Vector<Block*>& getAllBlocks();        // 得到所有方块
+    cocos2d::Vector<EnemyTank*>& getEnemies();      // 得到敌方坦克
+    cocos2d::Vector<PlayerTank*>& getPlayers();     // 得到玩家坦克
 
-    void addPlayer();                          // 添加玩家
-    void addEnemies();                         // 添加敌人
+    void enableAutoAddEnemies(bool b = true);       // 启用自动添加敌人
+    void enableAutoControlEnemies(bool b = true);   // 启用自动控制敌人
+
+    void addPlayer();                               // 添加玩家
+    void addEnemies();                              // 添加敌人
 
 private:
-    CREATE_FUNC(MapLayer);                     // 单例对象
+    CREATE_FUNC(MapLayer);                          // 单例对象
 
-    void __addSpriteFrameCache();              // 加载精灵帧缓存
+    void __addSpriteFrameCache();                   // 加载精灵帧缓存
+    void __addEnemy(float x, float y);              // 添加一辆敌方坦克
 
-    cocos2d::Vector<Block*> blocks;            // 管理所有方块
-    cocos2d::Vector<PlayerTank*> players;      // 管理玩家坦克
-    cocos2d::Vector<TankBase*> enemies;        // 管理敌方坦克
+    void autoAddEnemies(float);                     // 自动添加敌人
+    void autoControlEnemies(float);                 // 自动控制敌人
 
-    std::string data;                          // 地图数据
+    cocos2d::Vector<Block*> blocks;                 // 管理所有方块
+    cocos2d::Vector<PlayerTank*> players;           // 管理玩家坦克
+    cocos2d::Vector<EnemyTank*> enemies;            // 管理敌方坦克
+
+    std::string data;                               // 地图数据
+
+    unsigned char remainTank = ENEMIES_COUNT;       // 剩余未出生的敌方坦克
 };

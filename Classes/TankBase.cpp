@@ -34,11 +34,6 @@ void TankBase::stopAnimate() {
     this->stopAllActions();
 }
 
-void TankBase::__initBullets() {
-    auto bullet1 = Bullet::create();
-    bullets.pushBack(bullet1);
-}
-
 void TankBase::__autoMove(float /*t*/) {
     if (!canMove) {
         return;
@@ -138,7 +133,12 @@ void TankBase::stopMove() {
     isMove = false;
 }
 
-void TankBase::birthAnimation(std::string afterStart) {
+void TankBase::birth(std::string afterStart) {
+    level = 0;
+    canMove = false;
+    this->stopAllActions();
+    this->setPosition(PLAYER1_START_X, PLAYER1_START_Y);
+
     auto spriteFrameCache = SpriteFrameCache::getInstance();
     Vector<SpriteFrame*> spriteFrames;
     for (int i = 0; i < 4 * 2; i++) {
@@ -156,7 +156,8 @@ void TankBase::birthAnimation(std::string afterStart) {
         CallFunc::create([=]() {
         this->initWithSpriteFrameName(afterStart);
         canMove = true;
-        this->beInvincible(3);
+        if (dynamic_cast<PlayerTank*>(this))
+            this->beInvincible(3);
     }),
         nullptr
         ));
@@ -175,8 +176,7 @@ void TankBase::beInvincible(int time) {
     auto animation = Animation::createWithSpriteFrames(spriteFrames, 0.1f);
     auto animate = Animate::create(animation);
     this->addChild(ring);
-    ring->setAnchorPoint(Vec2(0, 0));
-    ring->setPosition(0, 0);
+    ring->setPosition(this->getContentSize() / 2);
     ring->runAction(Sequence::create(
         animate,
         CallFunc::create([=]() {
@@ -185,6 +185,40 @@ void TankBase::beInvincible(int time) {
     })
         , nullptr
         ));
+}
+
+void TankBase::disBlood() {
+    if (--blood == 0) {
+        auto spriteFrameCache = SpriteFrameCache::getInstance();
+        Vector<SpriteFrame*> spriteFrames;
+
+        for (int i = 0; i != 5; i++) {
+            std::string n = std::to_string(i);
+            auto spriteFrame = spriteFrameCache->getSpriteFrameByName("blast_" + n);
+            spriteFrames.pushBack(spriteFrame);
+        }
+
+        // TODO 每次死亡都重新构造动画
+        auto blastAnimation = Animation::createWithSpriteFrames(spriteFrames, 0.1f);
+        auto blastanimate = Animate::create(blastAnimation);
+
+        // 播放音效
+        AudioEngine::play2d("music/enemy-bomb.mp3");
+
+        // 移除该坦克
+        auto& enemies = MapLayer::getInstance()->getEnemies();
+        enemies.eraseObject(dynamic_cast<EnemyTank*>(this));
+
+        // 播放动画
+        this->runAction(
+            Sequence::create(
+                blastanimate,
+                CallFunc::create([this] {
+            this->removeFromParentAndCleanup(true);
+        }),
+                nullptr
+            ));
+    }
 }
 
 void TankBase::addSpriteFrameCache() {
@@ -256,7 +290,8 @@ Bullet* TankBase::getBullet1() {
 }
 
 void TankBase::__shoot(Bullet* bullet) {
-    // AudioEngine::play2d("music/shoot.mp3");
+    if (dynamic_cast<PlayerTank*>(this))
+        AudioEngine::play2d("music/shoot.mp3");
     auto position = this->getPosition();
     switch (dir) {
     case Dir::LEFT:

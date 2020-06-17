@@ -2,6 +2,8 @@
 
 #include "PlayerTank.h"
 #include "MapLayer.h"
+#include "PlayerBullet.h"
+#include "AudioEngine.h"
 
 USING_NS_CC;
 
@@ -12,19 +14,21 @@ bool PlayerTank::init() {
         return false;
     }
 
-    // 玩家出生时方向向上
-    dir = Dir::UP;
-
-    // TODO: 删掉这行
-    level = 2;
+    // 玩家出生时血量为3
+    blood = 3;
 
     // 展示出生动画
-    birthAnimation("player1_1_" + std::to_string(level));
+    birth("player1_1_" + std::to_string(level));
+
+    // 玩家出生时方向向上
+    dir = Dir::UP;
 
     return true;
 }
 
 void PlayerTank::setDir(Dir d) {
+    if (!canMove) return;
+
     if (d == dir) {
         return;
     }
@@ -42,10 +46,10 @@ void PlayerTank::setDir(Dir d) {
 }
 
 void PlayerTank::__initBullets() {
-    TankBase::__initBullets();
-
     // 玩家最多拥有两颗子弹
-    auto bullet2 = Bullet::create();
+    auto bullet1 = PlayerBullet::create();
+    auto bullet2 = PlayerBullet::create();
+    bullets.pushBack(bullet1);
     bullets.pushBack(bullet2);
 }
 
@@ -111,4 +115,52 @@ void PlayerTank::setBeControl(bool b) {
 
 bool PlayerTank::isBeControl() {
     return beControl;
+}
+
+void PlayerTank::disBlood() {
+    if (isInvincible)
+        return;
+
+    auto spriteFrameCache = SpriteFrameCache::getInstance();
+    Vector<SpriteFrame*> spriteFrames;
+
+    for (int i = 0; i != 5; i++) {
+        std::string n = std::to_string(i);
+        auto spriteFrame = spriteFrameCache->getSpriteFrameByName("blast_" + n);
+        spriteFrames.pushBack(spriteFrame);
+    }
+
+    // TODO 每次死亡都重新构造动画
+    auto blastAnimation = Animation::createWithSpriteFrames(spriteFrames, 0.1f);
+    auto blastanimate = Animate::create(blastAnimation);
+
+    // 播放音效
+    AudioEngine::play2d("music/enemy-bomb.mp3");
+
+    if (--blood == 0) {
+        // 移除该坦克
+        auto& players = MapLayer::getInstance()->getPlayers();
+        players.eraseObject(this);
+
+        // 播放动画
+        this->runAction(
+            Sequence::create(
+                blastanimate,
+                CallFunc::create([this] {
+            this->removeFromParentAndCleanup(true);
+        }),
+                nullptr
+            ));
+    } else {
+        // 播放动画
+        this->runAction(
+            Sequence::create(
+                blastanimate,
+                CallFunc::create([this] {
+            // 回到出生点
+            birth("player1_" + std::to_string((int)dir) + "_" + std::to_string(level));
+        }),
+                nullptr
+            ));
+    }
 }

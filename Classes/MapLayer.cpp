@@ -4,6 +4,7 @@
 #include "PlayerTank.h"
 #include "EnemyTank.h"
 #include "Block.h"
+#include "RandomUtil.h"
 
 #include <string>
 
@@ -46,6 +47,41 @@ void MapLayer::__addSpriteFrameCache() {
     EnemyTank::loadFrameAnimation();
 }
 
+void MapLayer::__addEnemy(float x, float y) {
+    for (const auto& player : players) {
+        if (player->getBoundingBox().containsPoint({ x, y }))
+            return;
+    }
+
+    for (const auto& enemy : enemies) {
+        if (enemy->getBoundingBox().containsPoint({ x, y }))
+            return;
+    }
+
+    auto enemyTank = EnemyTank::create();
+    this->addChild(enemyTank);
+    enemyTank->setPosition(x, y);
+
+    auto bullets = enemyTank->getAllBullets();
+    for (auto bullet : bullets) {
+        this->addChild(bullet);
+    }
+
+    enemies.pushBack(enemyTank);
+    remainTank--;
+}
+
+void MapLayer::autoAddEnemies(float) {
+    addEnemies();
+}
+
+void MapLayer::autoControlEnemies(float) {
+    // TODO
+    for (auto enemy : enemies) {
+        enemy->shoot();
+    }
+}
+
 void MapLayer::addPlayer() {
     auto player = PlayerTank::create();
     this->addChild(player);
@@ -60,17 +96,30 @@ void MapLayer::addPlayer() {
 }
 
 void MapLayer::addEnemies() {
-    // TODO
-    auto enemy = EnemyTank::create();
-    this->addChild(enemy);
-    enemy->setPosition(PLAYER2_START_X, PLAYER2_START_Y);
-
-    auto bullets = enemy->getAllBullets();
-    for (auto bullet : bullets) {
-        this->addChild(bullet);
+    // 初始时添加3辆坦克
+    if (remainTank == 20) {
+        __addEnemy(ENEMY1_STAR_X, ENEMY1_STAR_Y);
+        __addEnemy(ENEMY2_STAR_X, ENEMY2_STAR_Y);
+        __addEnemy(ENEMY3_STAR_X, ENEMY3_STAR_Y);
+    } else {
+        // 当坦克数量小于6辆时
+        if (enemies.size() < 6) {
+            // 随机添加一辆
+            switch (RandomUitl::random(0, 2)) {
+            case 0:
+                __addEnemy(ENEMY1_STAR_X, ENEMY1_STAR_Y);
+                break;
+            case 1:
+                __addEnemy(ENEMY2_STAR_X, ENEMY2_STAR_Y);
+                break;
+            case 2:
+                __addEnemy(ENEMY3_STAR_X, ENEMY3_STAR_Y);
+                break;
+            default:
+                break;
+            }
+        }
     }
-
-    enemies.pushBack(enemy);
 }
 
 void MapLayer::loadLevelData(short stage) {
@@ -131,7 +180,9 @@ void MapLayer::loadLevelData(short stage) {
 }
 
 PlayerTank* MapLayer::getPlayer1() {
-    return players.at(0);
+    if (players.size() > 0)
+        return players.at(0);
+    return nullptr;
 }
 
 Block* MapLayer::getCamp() {
@@ -140,6 +191,31 @@ Block* MapLayer::getCamp() {
 
 cocos2d::Vector<Block*>& MapLayer::getAllBlocks() {
     return blocks;
+}
+
+cocos2d::Vector<EnemyTank*>& MapLayer::getEnemies() {
+    return enemies;
+}
+
+cocos2d::Vector<PlayerTank*>& MapLayer::getPlayers() {
+    return players;
+}
+
+void MapLayer::enableAutoAddEnemies(bool b) {
+    if (b) {
+        // 每隔6秒添加一名敌人
+        this->schedule(CC_SCHEDULE_SELECTOR(MapLayer::autoAddEnemies), 6.0f);
+    } else {
+        this->unschedule(CC_SCHEDULE_SELECTOR(MapLayer::autoAddEnemies));
+    }
+}
+
+void MapLayer::enableAutoControlEnemies(bool b) {
+    if (b) {
+        this->schedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemies), 0.02f);
+    } else {
+        this->unschedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemies));
+    }
 }
 
 const std::string& MapLayer::getMapData() {

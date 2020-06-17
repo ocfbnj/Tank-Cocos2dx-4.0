@@ -82,7 +82,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0f / 120);
+    director->setAnimationInterval(1.0f / 60);
 
     // Set the design resolution
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::FIXED_HEIGHT);
@@ -93,7 +93,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // create a scene. it's an autorelease object
-    auto scene = GameScene::createScene();
+    auto scene = MenuScene::createScene();
 
     // run
     director->runWithScene(scene);

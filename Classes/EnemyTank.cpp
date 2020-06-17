@@ -1,6 +1,8 @@
 #include "Common.h"
 
 #include "EnemyTank.h"
+#include "EnemyBullet.h"
+#include "RandomUtil.h"
 
 USING_NS_CC;
 
@@ -11,16 +13,34 @@ bool EnemyTank::init() {
         return false;
     }
 
-    // TODO: 删掉这行
-    level = 3;
+    // 随机选择一个攻击目标
+    target = AttacTarget(RandomUitl::random(0, 1));
+
+    // 随机选择一个类型
+    level = RandomUitl::random(0, 3);
 
     // 展示出生动画
-    birthAnimation("enemy_" + std::to_string(int(dir)) + "_" + std::to_string(level));
+    birth("enemy_" + std::to_string(int(dir)) + "_" + std::to_string(level));
 
     return true;
 }
 
-void EnemyTank::setDir(Dir d) {}
+void EnemyTank::setDir(Dir d) {
+    if (d == dir) {
+        return;
+    }
+
+    dir = d;
+
+    // 当改变方向时，将坐标调整为最接近于8的倍数
+    __adjustPosition();
+
+    std::string name = "enemy_" + std::to_string((int)dir) + "_"
+        + std::to_string(level);
+
+    // 更换图片
+    this->setSpriteFrame(SpriteFrameCache::getInstance()->getSpriteFrameByName(name));
+}
 
 void EnemyTank::loadFrameAnimation() {
     auto spriteFrameCache = SpriteFrameCache::getInstance();
@@ -47,6 +67,11 @@ void EnemyTank::loadFrameAnimation() {
             animations[j].pushBack(Animate::create(enemy));
         }
     }
+}
+
+void EnemyTank::__initBullets() {
+    auto bullet = EnemyBullet::create();
+    bullets.pushBack(bullet);
 }
 
 const cocos2d::Vector<cocos2d::Animate*>* EnemyTank::__getAnimations() {

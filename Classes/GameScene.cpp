@@ -97,6 +97,9 @@ void GameScene::__initMapLayer() {
     map->addPlayer();
     map->addEnemies();
 
+    map->enableAutoAddEnemies();
+    map->enableAutoControlEnemies();
+
     this->addChild(map);
 
     // ÉèÖÃµØÍ¼Î»ÖÃ
@@ -109,14 +112,18 @@ void GameScene::__enableKeyListener() {
     auto listener = EventListenerKeyboard::create();
     listener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event*) {
         auto player1 = static_cast<PlayerTank*>(map->getPlayer1());
+        if (!player1) return;
+
         switch (keyCode) {
         case cocos2d::EventKeyboard::KeyCode::KEY_A:
         case cocos2d::EventKeyboard::KeyCode::KEY_W:
         case cocos2d::EventKeyboard::KeyCode::KEY_D:
         case cocos2d::EventKeyboard::KeyCode::KEY_S:
-            player1->setDir(table[keyCode]);
-            player1->playAnimate();
-            player1->startMove();
+            if (player1->canMove) {
+                player1->setDir(table[keyCode]);
+                player1->playAnimate();
+                player1->startMove();
+            }
             break;
         case cocos2d::EventKeyboard::KeyCode::KEY_J:
             player1->shoot();
@@ -129,13 +136,17 @@ void GameScene::__enableKeyListener() {
 
     listener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event*) {
         auto player1 = static_cast<PlayerTank*>(map->getPlayer1());
+        if (!player1) return;
+
         switch (keyCode) {
         case cocos2d::EventKeyboard::KeyCode::KEY_A:
         case cocos2d::EventKeyboard::KeyCode::KEY_W:
         case cocos2d::EventKeyboard::KeyCode::KEY_D:
         case cocos2d::EventKeyboard::KeyCode::KEY_S:
-            player1->stopAnimate();
-            player1->stopMove();
+            if (player1->canMove) {
+                player1->stopAnimate();
+                player1->stopMove();
+            }
             break;
         default:
             break;

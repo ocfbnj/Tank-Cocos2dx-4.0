@@ -21,16 +21,18 @@ public:
 
     void startMove();                                   // 开启自动移动
     void stopMove();                                    // 停止自动移动
-    void birthAnimation(std::string);                   // 坦克出生动画
+    void birth(std::string);                   // 坦克出生动画
     void beInvincible(int);                             // 使坦克无敌
+    virtual void disBlood();                            // 坦克掉血
 
     static void addSpriteFrameCache();
 
     cocos2d::Vector<Bullet*>& getAllBullets();          // 获得坦克拥有的所有子弹
     Bullet* getBullet1();                               // 得到第一颗子弹
+    bool canMove = false;                               // 判断能否移动（刚出生时一段时间内无法移动）
 
 protected:
-    virtual void __initBullets();                       // 创建子弹
+    virtual void __initBullets() = 0;                   // 创建子弹
     virtual const cocos2d::Vector<cocos2d::Animate*>*
         __getAnimations() = 0;                          // 获取帧动画
 
@@ -40,8 +42,9 @@ protected:
 
     Dir dir = Dir::DOWN;                                // 坦克当前方向
     TankLevel level = 0;                                // 坦克当前等级
-    bool canMove = false;                               // 判断能否移动（刚出生时一段时间内无法移动）
     cocos2d::Vector<Bullet*> bullets;                   // 存储坦克所有的子弹
+    unsigned char blood = 1;                            // 坦克生命值
+    bool isInvincible = false;                          // 判断是否无敌
 
 private:
     static float __adjustNumber(int number);            // 将给定数字调整为8的倍数
@@ -51,5 +54,4 @@ private:
 
     int musicId = -1;                                   // 移动时播放的音乐id
     bool isMove = false;                                // 判断是否正在移动
-    bool isInvincible = false;                          // 判断是否无敌
 };
