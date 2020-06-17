@@ -30,6 +30,10 @@ public:
     void addPlayer();                               // 添加玩家
     void addEnemies();                              // 添加敌人
 
+    void resetMap();                                   // 清理工作
+
+    unsigned char remainTank = ENEMIES_COUNT;       // 剩余未出生的敌方坦克
+
 private:
     CREATE_FUNC(MapLayer);                          // 单例对象
 
@@ -37,13 +41,12 @@ private:
     void __addEnemy(float x, float y);              // 添加一辆敌方坦克
 
     void autoAddEnemies(float);                     // 自动添加敌人
-    void autoControlEnemies(float);                 // 自动控制敌人
+    void autoControlEnemiesDirection(float);        // 自动控制敌人方向
+    void autoControlEnemiesShoot(float);            // 自动控制敌人发射子弹
 
     cocos2d::Vector<Block*> blocks;                 // 管理所有方块
     cocos2d::Vector<PlayerTank*> players;           // 管理玩家坦克
     cocos2d::Vector<EnemyTank*> enemies;            // 管理敌方坦克
 
     std::string data;                               // 地图数据
-
-    unsigned char remainTank = ENEMIES_COUNT;       // 剩余未出生的敌方坦克
 };

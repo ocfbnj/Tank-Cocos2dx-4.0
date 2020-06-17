@@ -2,7 +2,7 @@
 
 #include <random>
 
-class RandomUitl {
+class RandomUtil {
 public:
     static int random(int a, int b) {
         static std::random_device r;

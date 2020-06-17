@@ -53,6 +53,18 @@ void PlayerTank::__initBullets() {
     bullets.pushBack(bullet2);
 }
 
+bool PlayerTank::__isTankIntersection() {
+    auto& enemies = MapLayer::getInstance()->getEnemies();
+
+    for (auto enemy : enemies) {
+        if (this->getBoundingBox().myIntersectsRect(enemy->getBoundingBox())) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void PlayerTank::loadFrameAnimation() {
     auto spriteFrameCache = SpriteFrameCache::getInstance();
 
@@ -153,6 +165,7 @@ void PlayerTank::disBlood() {
             ));
     } else {
         // ²¥·Å¶¯»­
+        this->isInvincible = true; // ·ÀÖ¹µôÑª
         this->runAction(
             Sequence::create(
                 blastanimate,

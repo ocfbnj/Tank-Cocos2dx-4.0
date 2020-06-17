@@ -26,4 +26,5 @@ private:
     static cocos2d::Vector<cocos2d::Animate*> animations[4];   // 存储坦克移动帧动画（方向和等级）
 
     void __initBullets() override;
+    bool __isTankIntersection() override;
 };

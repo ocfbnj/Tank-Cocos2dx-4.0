@@ -145,7 +145,8 @@ bool Bullet::__isMapIntersection() {
         || position.x + BULLET_SIZE / 2 > CENTER_WIDTH
         || position.y - BULLET_SIZE / 2 < 0) {
 
-        AudioEngine::play2d("music/bin.mp3");
+        if (dynamic_cast<PlayerBullet*>(this))
+            AudioEngine::play2d("music/bin.mp3");
         return true;
     }
     return false;

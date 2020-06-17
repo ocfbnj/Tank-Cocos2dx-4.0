@@ -14,8 +14,10 @@ public:
 
     CREATE_FUNC(GameScene);
 
+    short stage = 1;                                          // 当前关卡
+
 private:
-    MapLayer* map;                                            // 管理地图
+    MapLayer* map = nullptr;                                  // 管理地图
     std::map<
         cocos2d::EventKeyboard::KeyCode, Dir> table;          // 键位方向表
 
@@ -23,7 +25,6 @@ private:
     void __initMapLayer();                                    // 初始化地图数据
     void __enableKeyListener();                               // 启动键盘监听器
     void __addTouchButton();                                  // 添加触摸按钮
-
-    short stage = 1;                                          // 当前关卡
+    void __checkGameStatus(float);                            // 检查游戏状态
 };
 

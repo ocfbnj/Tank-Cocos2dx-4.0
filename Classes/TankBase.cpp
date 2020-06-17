@@ -63,9 +63,14 @@ void TankBase::__autoMove(float /*t*/) {
         break;
     }
 
+    moveDistance += int(step);
+
     // 如果产生碰撞，则回到移动之前的位置
     if (__isBlockIntersection() || __isMapIntersection() || __isTankIntersection()) {
         this->setPosition(position);
+
+        // 敌方坦克碰撞后可以改变方向
+        moveDistance = 100;
     }
 }
 
@@ -114,14 +119,10 @@ bool TankBase::__isBlockIntersection() {
     return false;
 }
 
-bool TankBase::__isTankIntersection() {
-    // TODO
-    return false;
-}
-
 void TankBase::startMove() {
     if (!isMove) {
-        musicId = AudioEngine::play2d("music/player_move.mp3");
+        if (dynamic_cast<PlayerTank*>(this))
+            musicId = AudioEngine::play2d("music/player_move.mp3");
         this->schedule(CC_SCHEDULE_SELECTOR(TankBase::__autoMove), 0.02f);
         isMove = true;
     }

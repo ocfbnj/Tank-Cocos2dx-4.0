@@ -29,6 +29,7 @@ bool MapLayer::init() {
 MapLayer* MapLayer::getInstance() {
     if (!_mapLayer) {
         _mapLayer = MapLayer::create();
+        _mapLayer->retain();
     }
 
     return _mapLayer;
@@ -75,8 +76,13 @@ void MapLayer::autoAddEnemies(float) {
     addEnemies();
 }
 
-void MapLayer::autoControlEnemies(float) {
-    // TODO
+void MapLayer::autoControlEnemiesDirection(float) {
+    for (auto enemy : enemies) {
+        enemy->changeDirection();
+    }
+}
+
+void MapLayer::autoControlEnemiesShoot(float) {
     for (auto enemy : enemies) {
         enemy->shoot();
     }
@@ -97,15 +103,17 @@ void MapLayer::addPlayer() {
 
 void MapLayer::addEnemies() {
     // 初始时添加3辆坦克
-    if (remainTank == 20) {
+    if (remainTank == ENEMIES_COUNT) {
         __addEnemy(ENEMY1_STAR_X, ENEMY1_STAR_Y);
         __addEnemy(ENEMY2_STAR_X, ENEMY2_STAR_Y);
         __addEnemy(ENEMY3_STAR_X, ENEMY3_STAR_Y);
     } else {
+        if (remainTank == 0) return;
+
         // 当坦克数量小于6辆时
         if (enemies.size() < 6) {
             // 随机添加一辆
-            switch (RandomUitl::random(0, 2)) {
+            switch (RandomUtil::random(0, 2)) {
             case 0:
                 __addEnemy(ENEMY1_STAR_X, ENEMY1_STAR_Y);
                 break;
@@ -122,7 +130,20 @@ void MapLayer::addEnemies() {
     }
 }
 
+void MapLayer::resetMap() {
+    blocks.clear();
+    data.clear();
+    enemies.clear();
+    players.clear();
+    this->cleanup();
+    this->removeAllChildrenWithCleanup(true);
+    this->remainTank = ENEMIES_COUNT;
+}
+
 void MapLayer::loadLevelData(short stage) {
+    // 清理工作
+    resetMap();
+
     // 先添加大本营
     auto camp = BlockCamp::create();
     this->addChild(camp);
@@ -212,9 +233,11 @@ void MapLayer::enableAutoAddEnemies(bool b) {
 
 void MapLayer::enableAutoControlEnemies(bool b) {
     if (b) {
-        this->schedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemies), 0.02f);
+        this->schedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemiesDirection), 0.1f);
+        this->schedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemiesShoot), 0.5f);
     } else {
-        this->unschedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemies));
+        this->unschedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemiesDirection));
+        this->unschedule(CC_SCHEDULE_SELECTOR(MapLayer::autoControlEnemiesShoot));
     }
 }
 

@@ -48,6 +48,12 @@ constexpr float BULLET_SIZE = 4;
 // 敌方坦克总数
 constexpr unsigned char ENEMIES_COUNT = 20;
 
+// 敌方坦克移动100距离后可更改方向
+constexpr int MAX_MOVE_DISTANCE = 100;
+
+// 关卡总数
+constexpr short STAGE_COUNT = 35;
+
 enum class Dir {
     LEFT = 0, UP, RIGHT, DOWN
 };

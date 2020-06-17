@@ -21,7 +21,7 @@ public:
 
     void startMove();                                   // 开启自动移动
     void stopMove();                                    // 停止自动移动
-    void birth(std::string);                   // 坦克出生动画
+    void birth(std::string);                            // 坦克出生动画
     void beInvincible(int);                             // 使坦克无敌
     virtual void disBlood();                            // 坦克掉血
 
@@ -45,12 +45,13 @@ protected:
     cocos2d::Vector<Bullet*> bullets;                   // 存储坦克所有的子弹
     unsigned char blood = 1;                            // 坦克生命值
     bool isInvincible = false;                          // 判断是否无敌
+    int moveDistance = 0;                               // 移动总距离
 
 private:
     static float __adjustNumber(int number);            // 将给定数字调整为8的倍数
     bool __isMapIntersection();                         // 检测坦克与地图边缘的碰撞
     bool __isBlockIntersection();                       // 检测坦克与方块的碰撞
-    bool __isTankIntersection();                        // 检测坦克之间的碰撞
+    virtual bool __isTankIntersection() = 0;            // 检测坦克之间的碰撞
 
     int musicId = -1;                                   // 移动时播放的音乐id
     bool isMove = false;                                // 判断是否正在移动

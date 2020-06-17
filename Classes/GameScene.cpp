@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "AudioEngine.h"
 #include "PlayerTank.h"
+#include "MenuScene.h"
 
 USING_NS_CC;
 
@@ -83,6 +84,7 @@ void GameScene::__showLoadAnimate() {
         this->__initMapLayer();
         this->__enableKeyListener();
         this->__addTouchButton();
+        this->schedule(CC_SCHEDULE_SELECTOR(GameScene::__checkGameStatus), 0.2f);
     }),
         nullptr)
     );
@@ -91,8 +93,7 @@ void GameScene::__showLoadAnimate() {
 void GameScene::__initMapLayer() {
     map = MapLayer::getInstance();
 
-    // map->loadLevelData(stage);
-    map->loadLevelData(10);
+    map->loadLevelData(stage);
 
     map->addPlayer();
     map->addEnemies();
@@ -217,4 +218,25 @@ void GameScene::__addTouchButton() {
     };
 
     _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+}
+
+void GameScene::__checkGameStatus(float) {
+    if (map->getPlayers().size() == 0) {
+        // 失败
+        // 进入主界面
+        this->cleanup();
+        this->removeAllChildrenWithCleanup(true);
+
+        auto scene = MenuScene::create();
+        Director::getInstance()->replaceScene(scene);
+    } else if (map->remainTank == 0 && map->getEnemies().size() == 0) {
+        // 胜利
+        // 进入下一场景
+        this->cleanup();
+        this->removeAllChildrenWithCleanup(true);
+
+        auto scene = GameScene::create();
+        scene->stage = ((this->stage + 1) % STAGE_COUNT) + 1;
+        Director::getInstance()->replaceScene(scene);
+    }
 }

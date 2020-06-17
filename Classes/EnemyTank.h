@@ -2,10 +2,6 @@
 
 #include "TankBase.h"
 
-enum class AttacTarget {
-    PLAYER, CAMP
-};
-
 class EnemyTank : public TankBase {
 public:
     CREATE_FUNC(EnemyTank);
@@ -15,6 +11,7 @@ public:
     void setDir(Dir d) override;
 
     static void loadFrameAnimation();                          // 加载坦克移动帧动画
+    void changeDirection();                                    // 更改方向
 
 protected:
     void __initBullets() override;
@@ -23,5 +20,7 @@ protected:
 
 private:
     static cocos2d::Vector<cocos2d::Animate*> animations[4];   // 存储坦克移动帧动画（方向和等级）
-    AttacTarget target = AttacTarget::PLAYER;                  // 坦克的攻击目标
+    bool canChangeDir = false;                                 // 能否更改方向
+
+    bool __isTankIntersection() override;
 };

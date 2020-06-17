@@ -3,6 +3,7 @@
 #include "EnemyTank.h"
 #include "EnemyBullet.h"
 #include "RandomUtil.h"
+#include "MapLayer.h"
 
 USING_NS_CC;
 
@@ -13,11 +14,11 @@ bool EnemyTank::init() {
         return false;
     }
 
-    // 随机选择一个攻击目标
-    target = AttacTarget(RandomUitl::random(0, 1));
-
     // 随机选择一个类型
-    level = RandomUitl::random(0, 3);
+    level = RandomUtil::random(0, 3);
+
+    // 不断移动
+    startMove();
 
     // 展示出生动画
     birth("enemy_" + std::to_string(int(dir)) + "_" + std::to_string(level));
@@ -69,6 +70,42 @@ void EnemyTank::loadFrameAnimation() {
     }
 }
 
+void EnemyTank::changeDirection() {
+    if (moveDistance >= MAX_MOVE_DISTANCE) {
+        canChangeDir = true;
+    }
+
+    if (!canChangeDir) return;
+
+    moveDistance = 0;
+    canChangeDir = false;
+
+    /*if (target == AttacTarget::CAMP) {
+        if (RandomUtil::random(1, 10) <= 4) {
+            auto camp = MapLayer::getInstance()->getCamp();
+            if (this->getPositionX() > camp->getPositionX()) {
+                setDir(Dir::LEFT);
+            } else {
+                setDir(Dir::RIGHT);
+            }
+        } else {
+            setDir(Dir::DOWN);
+        }
+    }*/
+
+    auto select = RandomUtil::random(1, 10);
+
+    if (select <= 4) {
+        setDir(Dir::DOWN);
+    } else if (select <= 6) {
+        setDir(Dir::UP);
+    } else if (select <= 8) {
+        setDir(Dir::LEFT);
+    } else {
+        setDir(Dir::RIGHT);
+    }
+}
+
 void EnemyTank::__initBullets() {
     auto bullet = EnemyBullet::create();
     bullets.pushBack(bullet);
@@ -76,4 +113,22 @@ void EnemyTank::__initBullets() {
 
 const cocos2d::Vector<cocos2d::Animate*>* EnemyTank::__getAnimations() {
     return animations;
+}
+
+bool EnemyTank::__isTankIntersection() {
+    auto players = MapLayer::getInstance()->getPlayers();
+    for (auto player : players) {
+        if (this->getBoundingBox().myIntersectsRect(player->getBoundingBox())) {
+            return true;
+        }
+    }
+
+    auto buddies = MapLayer::getInstance()->getEnemies();
+    for (auto buddy : buddies) {
+        if (buddy != this && this->getBoundingBox().myIntersectsRect(buddy->getBoundingBox())) {
+            return true;
+        }
+    }
+
+    return false;
 }
