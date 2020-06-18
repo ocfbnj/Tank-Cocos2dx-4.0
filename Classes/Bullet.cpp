@@ -202,6 +202,7 @@ bool Bullet::__isBlockIntersection() {
                 MapLayer::getInstance()->getCamp()->setTexture(
                     SpriteFrameCache::getInstance()->getSpriteFrameByName("camp_1")->getTexture());
                 MapLayer::getInstance()->isCampOk = false;
+                count++;
                 ++it;
             }
 

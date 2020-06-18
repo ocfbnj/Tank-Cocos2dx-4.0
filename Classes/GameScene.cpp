@@ -5,6 +5,8 @@
 #include "PlayerTank.h"
 #include "MenuScene.h"
 #include "GameOverScene.h"
+#include "NumberUtil.h"
+#include <vector>
 
 USING_NS_CC;
 
@@ -15,6 +17,9 @@ Scene* GameScene::createScene() {
 bool GameScene::init() {
     if (!Scene::init())
         return false;
+
+    // 停止所有音乐
+    AudioEngine::stopAll();
 
     // 初始化表
     table[EventKeyboard::KeyCode::KEY_A] = Dir::LEFT;
@@ -70,18 +75,33 @@ void GameScene::__showLoadAnimate() {
 
 
     // 展示Stage
-    auto label = Label::createWithSystemFont("Stage " + std::to_string(stage), "Fira Code", 10);
-    label->setColor(Color3B(0, 0, 0));
-    label->setPosition(Director::getInstance()->getVisibleSize() / 2);
-    label->setVisible(false);
-    this->addChild(label);
+    auto node = Node::create();
+    this->addChild(node);
+    node->setPosition(this->getContentSize().width / 2 - 10, this->getContentSize().height / 2);
 
-    label->runAction(Sequence::create(
+    auto stageSprite = Sprite::create("images/stage.png");
+    stageSprite->getTexture()->setAliasTexParameters();
+    node->addChild(stageSprite);
+    stageSprite->setPosition(0, 0);
+
+    auto tenSprite = NumberUtil::getBlackNumber(stage / 10);
+    tenSprite->getTexture()->setAliasTexParameters();
+    node->addChild(tenSprite);
+    tenSprite->setPosition(stageSprite->getPositionX() + stageSprite->getContentSize().width, stageSprite->getPositionY());
+
+    if (stage / 10 == 0) tenSprite->setVisible(false);
+
+    auto sigSprite = NumberUtil::getBlackNumber(stage % 10);
+    sigSprite->getTexture()->setAliasTexParameters();
+    node->addChild(sigSprite);
+    sigSprite->setPosition(tenSprite->getPositionX() + tenSprite->getContentSize().width, stageSprite->getPositionY());
+
+    node->runAction(Sequence::create(
         DelayTime::create(delayTime),
         Show::create(),
         DelayTime::create(1),
-        CallFunc::create([=]() {
-        this->removeChild(label);
+        CallFunc::create([this, node]() {
+        node->removeFromParentAndCleanup(true);
         this->__initMapLayer();
         this->__enableKeyListener();
         this->__addTouchButton();
@@ -93,21 +113,26 @@ void GameScene::__showLoadAnimate() {
 
 void GameScene::__initMapLayer() {
     map = MapLayer::getInstance();
-
-    map->loadLevelData(stage);
-
-    map->addPlayer();
-    map->addEnemies();
-
-    map->enableAutoAddEnemies();
-    map->enableAutoControlEnemies();
-
     this->addChild(map);
 
     // 设置地图位置
     map->setContentSize(Size(CENTER_WIDTH, CENTER_HEIGHT));
     map->setIgnoreAnchorPointForPosition(false);
     map->setPosition(Director::getInstance()->getVisibleSize() / 2);
+
+    // 加载地图数据
+    map->loadLevelData(stage);
+
+    // 更新信息
+    updateInformationArea(true);
+
+    // 添加玩家和敌人
+    map->addPlayer();
+    map->addEnemies();
+
+    // 自动控制敌人
+    map->enableAutoAddEnemies();
+    map->enableAutoControlEnemies();
 }
 
 void GameScene::__enableKeyListener() {
@@ -224,17 +249,16 @@ void GameScene::__addTouchButton() {
 void GameScene::__checkGameStatus(float) {
     if (map->getPlayers().size() == 0 || !map->isCampOk) {
         // 进入失败场景
-        this->unschedule(CC_SCHEDULE_SELECTOR(GameScene::__checkGameStatus));
-        scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::__gameover), 2.0f);
+        this->unscheduleAllCallbacks();
+        _eventDispatcher->removeAllEventListeners();
 
+        scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::__gameover), 2.0f);
     } else if (map->remainTank == 0 && map->getEnemies().size() == 0) {
-        // 胜利
-        // 进入下一场景
+        // 进入结算场景
         this->cleanup();
         this->removeAllChildrenWithCleanup(true);
 
-        auto scene = GameScene::create();
-        scene->stage = ((this->stage + 1) % STAGE_COUNT) + 1;
+        auto scene = GameScene::create((this->stage + 1) % (STAGE_COUNT + 1));
         Director::getInstance()->replaceScene(scene);
     }
 }
@@ -243,9 +267,9 @@ void GameScene::__gameover(float) {
     auto gameover = Sprite::create("images/gameover.png");
     gameover->getTexture()->setAliasTexParameters();
     this->addChild(gameover);
-    gameover->setPosition({this->getContentSize().width / 2, -gameover->getContentSize().height / 2});
-    auto moveTo = MoveTo::create(2.0f, {this->getContentSize().width / 2, this->getContentSize().height / 2 });
-    
+    gameover->setPosition({ this->getContentSize().width / 2, -gameover->getContentSize().height / 2 });
+    auto moveTo = MoveTo::create(2.0f, { this->getContentSize().width / 2, this->getContentSize().height / 2 });
+
     gameover->runAction(Sequence::create(
         moveTo,
         DelayTime::create(1.0f),
@@ -256,7 +280,44 @@ void GameScene::__gameover(float) {
         Director::getInstance()->replaceScene(GameOverScene::createScene());
     }),
         nullptr
-    ));
-    
-    
+        ));
+
+
+}
+
+void GameScene::updateInformationArea(bool first) {
+    static std::vector<Sprite*> sprites;
+    if (first) {
+        sprites.clear();
+        auto spriteFrameCache = SpriteFrameCache::getInstance();
+        // 绘制剩余坦克图标
+        // 左上角坐标
+        auto x = map->getPositionX() + map->getContentSize().width / 2 + 7;
+        auto y = map->getPositionY() + map->getContentSize().height / 2 - 10;
+        auto enemyIcon = spriteFrameCache->getSpriteFrameByName("enemy_icon");
+
+        for (int i = 0; i != map->remainTank; i++) {
+            auto icon = Sprite::createWithSpriteFrame(enemyIcon);
+            icon->getTexture()->setAliasTexParameters();
+            this->addChild(icon);
+            icon->setPosition(x + (i % 2) * icon->getContentSize().width,
+                              y - (i / 2) * icon->getContentSize().height);
+            sprites.push_back(icon);
+        }
+    } else {
+        sprites.back()->removeFromParent();
+        sprites.pop_back();
+    }
+
+}
+
+void GameScene::addSpriteFrameCache() {
+    auto spriteFrameCache = SpriteFrameCache::getInstance();
+
+    spriteFrameCache->addSpriteFrame(Sprite::create("images/enemytank-ico.png")->getSpriteFrame(), "enemy_icon");
+    spriteFrameCache->addSpriteFrame(Sprite::create("images/1P.png")->getSpriteFrame(), "1p");
+    spriteFrameCache->addSpriteFrame(Sprite::create("images/2P.png")->getSpriteFrame(), "2p");
+    spriteFrameCache->addSpriteFrame(Sprite::create("images/playertank-ico.png")->getSpriteFrame(), "player_icon");
+    spriteFrameCache->addSpriteFrame(Sprite::create("images/flag.png")->getSpriteFrame(), "flag");
+
 }

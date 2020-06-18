@@ -44,6 +44,8 @@ void TankBase::__autoMove(float /*t*/) {
 
     auto position = this->getPosition();
     auto step = 1.0f + level * 0.2f;
+    if (dynamic_cast<EnemyTank*>(this))
+        step = 1.0f;
 
     // 假设可以移动
     switch (dir) {
@@ -135,7 +137,8 @@ void TankBase::stopMove() {
 }
 
 void TankBase::birth(std::string afterStart) {
-    level = 0;
+    if (dynamic_cast<PlayerTank*>(this))
+        level = 0;
     canMove = false;
     this->stopAllActions();
     this->setPosition(PLAYER1_START_X, PLAYER1_START_Y);

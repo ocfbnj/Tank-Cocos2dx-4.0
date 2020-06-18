@@ -5,6 +5,7 @@
 #include "EnemyTank.h"
 #include "Block.h"
 #include "RandomUtil.h"
+#include "GameScene.h"
 
 #include <string>
 
@@ -36,6 +37,9 @@ MapLayer* MapLayer::getInstance() {
 }
 
 void MapLayer::__addSpriteFrameCache() {
+    // 右侧信息区域
+    GameScene::addSpriteFrameCache();
+
     // 方块
     Block::addSpriteFrameCache();
 
@@ -70,6 +74,11 @@ void MapLayer::__addEnemy(float x, float y) {
 
     enemies.pushBack(enemyTank);
     remainTank--;
+
+    auto parent = dynamic_cast<GameScene*>(this->getParent());
+    if (parent) {
+        parent->updateInformationArea();
+    }
 }
 
 void MapLayer::autoAddEnemies(float) {
@@ -84,7 +93,9 @@ void MapLayer::autoControlEnemiesDirection(float) {
 
 void MapLayer::autoControlEnemiesShoot(float) {
     for (auto enemy : enemies) {
-        enemy->shoot();
+        // 三分之一的概率发射子弹
+        if (RandomUtil::random(1, 3) == 1)
+            enemy->shoot();
     }
 }
 
@@ -225,8 +236,8 @@ cocos2d::Vector<PlayerTank*>& MapLayer::getPlayers() {
 
 void MapLayer::enableAutoAddEnemies(bool b) {
     if (b) {
-        // 每隔6秒添加一名敌人
-        this->schedule(CC_SCHEDULE_SELECTOR(MapLayer::autoAddEnemies), 6.0f);
+        // 每隔4.5秒添加一名敌人
+        this->schedule(CC_SCHEDULE_SELECTOR(MapLayer::autoAddEnemies), 4.5f);
     } else {
         this->unschedule(CC_SCHEDULE_SELECTOR(MapLayer::autoAddEnemies));
     }

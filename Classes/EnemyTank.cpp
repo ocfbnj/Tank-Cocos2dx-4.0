@@ -95,6 +95,7 @@ void EnemyTank::changeDirection() {
 
     auto select = RandomUtil::random(1, 10);
 
+    this->stopAnimate();
     if (select <= 4) {
         setDir(Dir::DOWN);
     } else if (select <= 6) {
@@ -104,6 +105,7 @@ void EnemyTank::changeDirection() {
     } else {
         setDir(Dir::RIGHT);
     }
+    this->playAnimate();
 }
 
 void EnemyTank::__initBullets() {

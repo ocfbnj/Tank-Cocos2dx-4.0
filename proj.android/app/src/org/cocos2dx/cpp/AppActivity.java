@@ -52,7 +52,7 @@ public class AppActivity extends Cocos2dxActivity {
             getWindow().setAttributes(lp);
         }
         // DO OTHER INITIALIZATION BELOW
-        
+        getWindow().setFlags(LayoutParams.FLAG_KEEP_SCREEN_ON, LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
 }

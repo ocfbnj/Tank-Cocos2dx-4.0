@@ -12,7 +12,26 @@ public:
 
     bool init() override;
 
-    CREATE_FUNC(GameScene);
+    static void addSpriteFrameCache();
+    void updateInformationArea(bool first = false);                // 更新右侧信息区域
+
+    static GameScene* create(int stage = 1) {
+        auto* pRet = new(std::nothrow) GameScene();
+        if (pRet) {
+            if (stage == 0 || stage == 12 || stage == 14 || stage == 16 || stage == 30)
+                stage++; // 地图数据有问题
+            pRet->stage = stage;
+            if (pRet->init()) {
+                pRet->autorelease();
+                return pRet;
+            }
+        }
+
+        delete pRet;
+        pRet = nullptr;
+
+        return nullptr;
+    }
 
     short stage = 1;                                          // 当前关卡
 
