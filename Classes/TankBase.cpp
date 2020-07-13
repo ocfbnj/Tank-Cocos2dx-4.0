@@ -192,36 +192,37 @@ void TankBase::beInvincible(int time) {
 }
 
 void TankBase::disBlood() {
+    if (isInvincible)
+        return;
+
+    auto spriteFrameCache = SpriteFrameCache::getInstance();
+    Vector<SpriteFrame*> spriteFrames;
+
+    for (int i = 0; i != 5; i++) {
+        std::string n = std::to_string(i);
+        auto spriteFrame = spriteFrameCache->getSpriteFrameByName("blast_" + n);
+        spriteFrames.pushBack(spriteFrame);
+    }
+
+    // TODO 每次死亡都重新构造动画
+    auto blastAnimation = Animation::createWithSpriteFrames(spriteFrames, 0.1f);
+    auto blastanimate = Animate::create(blastAnimation);
+
+    // 播放动画
+    auto node = Sprite::create();
+    MapLayer::getInstance()->addChild(node);
+    node->setPosition(this->getPosition());
+    node->runAction(Sequence::create(blastanimate,
+                                     CallFunc::create([node] {node->removeFromParentAndCleanup(true); }),
+                                     nullptr));
     if (--blood == 0) {
-        auto spriteFrameCache = SpriteFrameCache::getInstance();
-        Vector<SpriteFrame*> spriteFrames;
-
-        for (int i = 0; i != 5; i++) {
-            std::string n = std::to_string(i);
-            auto spriteFrame = spriteFrameCache->getSpriteFrameByName("blast_" + n);
-            spriteFrames.pushBack(spriteFrame);
-        }
-
-        // TODO 每次死亡都重新构造动画
-        auto blastAnimation = Animation::createWithSpriteFrames(spriteFrames, 0.1f);
-        auto blastanimate = Animate::create(blastAnimation);
-
         // 播放音效
         AudioEngine::play2d("music/enemy-bomb.mp3");
 
         // 移除该坦克
         auto& enemies = MapLayer::getInstance()->getEnemies();
         enemies.eraseObject(dynamic_cast<EnemyTank*>(this));
-
-        // 播放动画
-        this->runAction(
-            Sequence::create(
-                blastanimate,
-                CallFunc::create([this] {
-            this->removeFromParentAndCleanup(true);
-        }),
-                nullptr
-            ));
+        this->removeFromParentAndCleanup(true);
     }
 }
 

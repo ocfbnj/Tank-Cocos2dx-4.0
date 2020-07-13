@@ -12,6 +12,7 @@ public:
 
     static void loadFrameAnimation();                          // 加载坦克移动帧动画
     void changeDirection();                                    // 更改方向
+    virtual void disBlood();                                   // 坦克掉血
 
 protected:
     void __initBullets() override;

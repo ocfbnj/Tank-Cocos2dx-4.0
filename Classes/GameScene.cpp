@@ -18,9 +18,6 @@ bool GameScene::init() {
     if (!Scene::init())
         return false;
 
-    // 停止所有音乐
-    AudioEngine::stopAll();
-
     // 初始化表
     table[EventKeyboard::KeyCode::KEY_A] = Dir::LEFT;
     table[EventKeyboard::KeyCode::KEY_W] = Dir::UP;
@@ -248,12 +245,16 @@ void GameScene::__addTouchButton() {
 
 void GameScene::__checkGameStatus(float) {
     if (map->getPlayers().size() == 0 || !map->isCampOk) {
+        // 停止所有音乐
+        AudioEngine::stopAll();
         // 进入失败场景
         this->unscheduleAllCallbacks();
         _eventDispatcher->removeAllEventListeners();
 
         scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::__gameover), 2.0f);
     } else if (map->remainTank == 0 && map->getEnemies().size() == 0) {
+        // 停止所有音乐
+        AudioEngine::stopAll();
         // 进入结算场景
         this->cleanup();
         this->removeAllChildrenWithCleanup(true);

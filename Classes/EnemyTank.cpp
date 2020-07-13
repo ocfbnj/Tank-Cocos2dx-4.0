@@ -108,6 +108,10 @@ void EnemyTank::changeDirection() {
     this->playAnimate();
 }
 
+void EnemyTank::disBlood() {
+    TankBase::disBlood();
+}
+
 void EnemyTank::__initBullets() {
     auto bullet = EnemyBullet::create();
     bullets.pushBack(bullet);
